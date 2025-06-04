@@ -297,7 +297,7 @@ def orders(request):
         user_id_to_filter = 900  # Default user ID if no profile_name in session
 
     order_item = Main_table.objects.filter(userid=user_id_to_filter)
-    context = {'order_items': order_item, 'name': profile_name, 'user_id': user_id_to_filter, 'status': "Processing"}
+    context = {'order_items': order_item, 'name': profile_name, 'user_id': user_id_to_filter, 'status': "Delivered"}
     return render(request, 'order.html', context)
 # till here 
 
