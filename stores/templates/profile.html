@@ -1,0 +1,555 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* General Body and HTML */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f0f2f5; /* Light grey background */
+            color: #333;
+            padding-top: 70px; /* Space for the fixed navigation bar */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            display: flex;
+            flex-direction: column;
+        }
+
+               /* Navigation Bar */
+       /* Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 70px; /* Slightly taller for more presence */
+            background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
+            border-radius: 0; /* Full width, no rounded corners for a sleek look */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Distribute logo, search, and nav links */
+            padding: 0 30px; /* More padding */
+            z-index: 10000;
+        }
+
+        /* AGRO-FARM Logo and Text */
+        nav .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Slightly more space */
+        }
+
+        nav .main-logo-image {
+            height: 45px; /* Larger logo */
+            width: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2); /* Subtle shadow for logo */
+        }
+
+        nav .logo {
+            font-size: 1.8em; /* Larger font size */
+            font-weight: 800; /* Bolder */
+            letter-spacing: 2.5px; /* More prominent spacing */
+            color: #ffffff; /* Pure white for contrast */
+            cursor: pointer;
+            font-style: italic;
+            user-select: none;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Enhanced text shadow */
+        }
+
+        /* Search and country container */
+        .nav-search-country {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* More space */
+            flex: 1; /* Allows it to grow and take available space between logo and nav links */
+            max-width: 700px; /* Wider search area */
+            margin: 0 30px; /* More margin */
+        }
+
+        /* Search input container */
+        .nav-search-country .search-input-container {
+            position: relative; /* Essential for absolute positioning of icon */
+            flex: 1;
+        }
+
+        /* Search input */
+        .search-input {
+            width: 100%;
+            padding: 10px 45px 10px 20px; /* More padding, crucial for icon space */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            font-size: 1.05em; /* Slightly larger font */
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #2e8b57; /* More vibrant focus shadow */
+            background-color: #f7fff7; /* Very light green on focus */
+        }
+        /* Search icon inside input */
+        .search-icon {
+            position: absolute;
+            right: 15px; /* Position from the right edge of its parent (search-input-container) */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2e8b57; /* Darker green icon */
+            font-size: 1.3em; /* Larger icon */
+            pointer-events: none; /* Allows clicks to pass through to the input */
+            transition: color 0.3s ease; /* Smooth color transition */
+        }
+        .search-input:focus + .search-icon {
+            color: #1B7A43; /* Change icon color on input focus */
+        }
+
+        /* Search select */
+        .nav-search-country select.select,
+        .nav-search-country select.indian {
+            margin-right: 80px;
+            padding: 10px 15px; /* More padding */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            background-color: #ffffff;
+            font-weight: 700; /* Bolder text */
+            color: #2e8b57; /* Darker green */
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #2e8b57 50%),
+                linear-gradient(135deg, #2e8b57 50%, transparent 50%);
+            background-position:
+                calc(100% - 25px) calc(1em + 2px),
+                calc(100% - 18px) calc(1em + 2px);
+            background-size: 7px 7px; /* Larger arrow */
+            background-repeat: no-repeat;
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .nav-search-country select.select:hover,
+        .nav-search-country select.indian:hover {
+            box-shadow: 0 6px 15px rgba(46, 139, 87, 0.7); /* More prominent hover shadow */
+            background-color: #e6ffe6; /* Light green on hover */
+        }
+
+        /* Navigation Links (Home, Signin/Signup, Carts, Order, Logout) */
+        nav .nav-links-section {
+            display: flex;
+            list-style: none;
+            font-size: small;
+            margin: 0; /* Remove default margin */
+            padding: 0;
+            gap: 5px; /* Reduced gap between links */
+            /* Crucial for aligning to the right */
+            justify-content: flex-end; /* Aligns all items to the end (right) */
+            align-items: center; /* Vertically align items */
+            margin-top: 15px;
+            flex-shrink: 0; /* Prevent it from shrinking */
+        }
+
+        nav .nav-links-section li a {
+            color: black; /* Lighter grey for subtle default */
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 10px; /* Adjusted padding */
+            border-radius: 8px; /* Slightly more rounded */
+            transition: background-color 0.4s ease, color 0.4s ease, transform 0.2s ease; /* Added transform */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        nav .nav-links-section li a img {
+            height: 15px; /* Smaller icons */
+            width: 15px; /* Smaller icons */
+            margin-bottom: 2px; /* Less space below icon */
+            filter: brightness(0) invert(1); /* White icons by default */
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        nav .nav-links-section li a span {
+            font-size: 0.75em; /* Smaller text */
+            font-weight: 700; /* Bolder text */
+            white-space: nowrap;
+            color: black; /* Slightly greenish white */
+            transition: color 0.3s ease;
+        }
+
+        nav .nav-links-section li a:hover {
+            background-color: #8bc34a; /* Lighter green on hover */
+            color: #ffffff; /* White text on hover */
+            font-weight: 800;
+            transform: translateY(-3px); /* Subtle lift effect */
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+        }
+
+        nav .nav-links-section li a:hover img {
+            transform: scale(1.15); /* More pronounced icon scale */
+            filter: brightness(1) invert(0); /* Original color icons on hover */
+        }
+
+        nav .nav-links-section li a:hover span {
+            color: #1B7A43; /* Darker green for text on hover */
+        }
+
+        /* --- ACTIVE NAVIGATION LINK STYLES (MODIFIED) --- */
+        nav .nav-links-section li a.active {
+            border-bottom: 4px solid #ffffff; /* Thicker white underline */
+            padding-bottom: 6px; /* More space below underline */
+            background-color: #388e3c; /* Darker green for active state */
+            color: #ffffff; /* White text for active state */
+            font-weight: 900; /* Even bolder */
+            margin-right: 60px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Stronger shadow for active */
+        }
+
+        nav .nav-links-section li a.active span {
+            color: #ffffff; /* White text for active state */
+        }
+
+        nav .nav-links-section li a.active img {
+            filter: brightness(1) invert(0); /* Original color for active icons */
+        }
+
+
+        /* Profile Container Styling */
+        .profile-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 40px auto; /* Centered with vertical spacing */
+            text-align: center; /* Center content within the container */
+            animation: fadeIn 0.8s ease-out; /* Fade-in animation */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-container h2 {
+            color: #1B7A43; /* Green heading */
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .profile-info p {
+            margin: 15px 0;
+            color: #555;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center text within each paragraph */
+        }
+
+        .profile-info strong {
+            font-weight: bold;
+            color: #333;
+            margin-right: 8px;
+            font-size: 1.05em;
+        }
+        .profile-info p i {
+            color: #4CAF50; /* Green icons */
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+
+        /* Buttons Section */
+        .profile-actions {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically */
+            gap: 15px; /* Space between buttons */
+            align-items: center; /* Center buttons horizontally */
+        }
+
+        .profile-actions a {
+            display: block; /* Make links behave like blocks for full width */
+            width: 80%; /* Adjust width for buttons */
+            max-width: 300px; /* Max width for consistency */
+            padding: 12px 25px;
+            border-radius: 30px; /* More rounded buttons */
+            font-size: 1.1em;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-green {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+
+        .btn-green:hover {
+            background-color: #45a049; /* Darker green on hover */
+            box-shadow: 0 6px 15px rgba(0, 128, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-orange {
+            background-color: #f0ad4e; /* Orange */
+            color: white;
+        }
+
+        .btn-orange:hover {
+            background-color: #eea236; /* Darker orange on hover */
+            box-shadow: 0 6px 15px rgba(240, 173, 78, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-blue {
+            background-color: #007bff; /* Blue */
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .not-logged-in-message {
+            margin-top: 20px;
+            font-size: 1.1em;
+            color: #666;
+        }
+
+        /* --- Custom Confirmation Modal Styles --- */
+        .modal-overlay {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 10001; /* Sit on top of everything */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+            backdrop-filter: blur(5px); /* Blurred background */
+            display: flex; /* Use flexbox for centering */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
+            animation: fadeInOverlay 0.3s ease-out;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto; /* Centered */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 90%; /* Responsive width */
+            max-width: 400px; /* Max width */
+            text-align: center;
+            transform: scale(0.9); /* Initial scale for pop-in effect */
+            animation: zoomIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Creative pop-in animation */
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.7); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content h3 {
+            color: #1B7A43; /* Green heading */
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .modal-content p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .modal-buttons button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .modal-buttons .confirm-btn {
+            background-color: #dc3545; /* Red for destructive action */
+            color: white;
+        }
+
+        .modal-buttons .confirm-btn:hover {
+            background-color: #c82333;
+            box-shadow: 0 6px 15px rgba(220, 53, 69, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .modal-buttons .cancel-btn {
+            background-color: #6c757d; /* Grey for cancel */
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn:hover {
+            background-color: #5a6268;
+            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Footer space (optional, but good for fixed elements) */
+        footer {
+            margin-top: auto; /* Pushes footer to the bottom */
+            padding: 20px;
+            text-align: center;
+            color: #888;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+{% load static %}
+
+<nav>
+    <div class="logo-section">
+        <img src="{% static 'images/agro-removebg-preview.png' %}" alt="AGRO-FARM Logo" class="main-logo-image">
+        <div class="logo">AGRO-FARM</div>
+    </div>
+
+    <div class="nav-search-country">
+        <div class="search-input-container">
+            <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
+            <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+
+        <select class="indian" aria-label="Select country">
+            <option value="india">India</option>
+            <option value="sri_lanka">Sri Lanka</option>
+            <option value="canada">Canada</option>
+            <option value="australia">Australia</option>
+        </select>
+    </div>
+
+    <ul class="nav-links-section">
+        <li><a href="{% url 'home' %}">
+            <img src="{% static 'images/download-removebg-preview (1).png' %}" alt="Home Icon">
+            <span>Home</span>
+        </a></li>
+        <li>
+            {% if profile_name %}
+                <a href="{% url 'profile' %}">
+                    <img src="{% static 'images/p3-removebg-preview.png' %}" alt="Profile Icon">
+                    <span>{{ profile_name }}</span>
+                </a>
+            {% else %}
+                <a href="{% url 'second' %}">
+                    <img src="{% static 'images/user-removebg-preview.png' %}" alt="Sign In/Up Icon">
+                    <span>Signin/Signup</span>
+                </a>
+            {% endif %}
+        </li>
+        <li><a href="{% url 'carts' %}" >
+            <img src="{% static 'images/new_cart-removebg-preview.png' %}" alt="Carts Icon">
+            <span>Carts</span>
+        </a></li>
+        <li><a href="{% url 'order' %}">
+            <img src="{% static 'images/images-removebg-preview (3).png' %}" alt="Order Icon">
+            <span>Order</span>
+        </a></li>
+        <li><a href="{% url 'profile' %}" class="active">
+            <img src="{% static 'images/save-removebg-preview.png' %}" alt="Logout Icon">
+            <span>Logout</span>
+        </a></li>
+    </ul>
+</nav>
+
+
+
+<div class="profile-container">
+        <h2>Your Profile</h2>
+
+        <div class="profile-info">
+            {% if user_detail %}
+                <p><i class="fas fa-id-badge"></i><strong>User ID:</strong> {{ user_detail.user_id }}</p>
+                <p><i class="fas fa-user"></i><strong>Username:</strong> {{ user_detail.user_name }}</p>
+                <p><i class="fas fa-envelope"></i><strong>Email:</strong> {{ user_detail.gmail }}</p>
+                {# Add other custom fields from User_Detail here if they exist, e.g.: #}
+                 <p><i class="fas fa-phone"></i><strong>Password:</strong> {{ user_detail.password }}</p> 
+                {# <p><i class="fas fa-map-marker-alt"></i><strong>Address:</strong> {{ user_detail.address }}</p> #}
+            {% else %}
+                <p class="not-logged-in-message">It looks like you're not logged in or your profile details are missing.</p>
+            {% endif %}
+        </div>
+
+        <div class="profile-actions">
+            {% if user_detail %}
+                <a href="{% url 'home' %}" class="btn-green">Back to Home</a>
+                <a href="{% url 'order' %}" class="btn-blue">View Your Orders</a>
+                <a href="#" class="btn-orange" onclick="showLogoutConfirmation()">Logout ({{ profile_name }})</a> {# Changed to show custom modal #}
+            {% else %}
+                <a href="{% url 'second' %}" class="btn-green">Sign In / Sign Up</a>
+                <a href="{% url 'home' %}" class="btn-blue">Back to Home</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="logoutConfirmationModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>Ready to Go?</h3>
+            <p>You're about to log out of your account. Are you sure you want to proceed?</p>
+            <div class="modal-buttons">
+                <button class="confirm-btn" onclick="performLogout()">Yes, Logout</button>
+                <button class="cancel-btn" onclick="hideLogoutConfirmation()">Stay Here</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function showLogoutConfirmation() {
+        document.getElementById('logoutConfirmationModal').style.display = 'flex'; // Show the modal
+    }
+
+    function hideLogoutConfirmation() {
+        document.getElementById('logoutConfirmationModal').style.display = 'none'; // Hide the modal
+    }
+
+    function performLogout() {
+        // This function will be called if the user confirms logout
+        window.location.href = "{% url 'logout' %}"; // Redirect to your logout URL
+    }
+    </script>
+
+    <footer>
+        <p>&copy; 2024 FOODIE. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign In - Agro Farm</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #f0efe9;
+      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80');
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+    }
+    .container {
+      background: rgba(44, 71, 37, 0.85);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 24px;
+      color: #abe2a3;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      margin: 10px 0 20px 0;
+      border: 2px solid #81a673;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      background-color: #2f4a20;
+      color: #f0efe9;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      border-color: #a9d18e;
+      outline: none;
+      background-color: #406130;
+      color: #e6f5d0;
+    }
+    button, .btn-signup {
+      display: block;
+      width: 100%;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 20px rgba(169, 209, 142, 0.9);
+      text-decoration: none;
+      text-align: center;
+      user-select: none;
+    }
+    button {
+      background: #a9d18e;
+      color: #2f4a20;
+      padding: 14px;
+      border: none;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #b8e66a;
+      box-shadow: 0 6px 22px rgba(184, 230, 106, 1);
+    }
+    .btn-signup {
+      background: transparent;
+      color: #a9d18e;
+      margin-top: 15px;
+      border: 2px solid #a9d18e;
+      line-height: 2.2;
+    }
+    .btn-signup:hover {
+      background: #a9d18e;
+      color: #2f4a20;
+      box-shadow: 0 6px 22px rgba(184, 230, 106, 1);
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+      }
+      h2 {
+        font-size: 1.7rem;
+      }
+      button, .btn-signup {
+        font-size: 1rem;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Login form">
+    <h2>Login</h2>
+   <form action="{% url 'login_view' %}" method="POST" autocomplete="on" novalidate>
+    {% csrf_token %}
+    <input type="text" name="username" placeholder="Username or Email" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+</form>
+    <a href="acccountuser.html" class="btn-signup" role="button" aria-label="Go to Sign Up page">Sign Up</a>
+  </div>
+</body>
+</html>
+

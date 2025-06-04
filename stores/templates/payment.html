@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment Checkout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary-green: #1B7A43;
+            --light-green: #e8f5e9;
+            --accent-green: #4CAF50;
+            --dark-green: #2E7D32;
+            --border-color: #ddd;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --text-dark: #333;
+            --text-medium: #555;
+            --text-light: #666;
+            --orange-warning: #FF5722;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-green);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .payment-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px var(--shadow-light);
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            font-size: 2em;
+            letter-spacing: -0.5px;
+        }
+
+        .order-summary {
+            background-color: #f9f9f9;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-summary h3 {
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dotted #e0e0e0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .order-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 15px;
+            border: 1px solid #eee;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-details h4 {
+            margin: 0 0 5px 0;
+            color: var(--text-dark);
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .item-details p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.85em;
+        }
+
+        .item-price-qty {
+            text-align: right;
+            font-weight: bold;
+            color: var(--primary-green);
+            font-size: 1em;
+            min-width: 80px;
+        }
+
+        .total-amount-display {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin: 0;
+            padding: 15px;
+            border: 2px solid var(--accent-green);
+            border-radius: 8px;
+            background-color: var(--light-green);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payment-option {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            background-color: #fff;
+        }
+
+        .payment-option:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .payment-option input[type="radio"] {
+            margin-right: 18px;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .payment-option input[type="radio"]::before {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .payment-option input[type="radio"]:checked::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .payment-option label {
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            flex-grow: 1;
+            font-size: 1.1em;
+        }
+
+        .payment-option .logo, .payment-option .icon {
+            width: 50px;
+            height: 50px;
+            margin-left: 15px;
+            object-fit: contain;
+            filter: grayscale(0.1);
+            transition: filter 0.3s ease;
+        }
+        .payment-option:hover .logo, .payment-option:hover .icon {
+            filter: grayscale(0);
+        }
+
+        .payment-details {
+            margin-top: 5px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: none;
+            background-color: #fcfcfc;
+        }
+
+        .payment-details.active {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .payment-details h3 {
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .payment-details label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-medium);
+            font-size: 0.95em;
+        }
+
+        .payment-details input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .payment-details input[type="text"]:focus {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+            outline: none;
+        }
+
+        /* New styles for GPay specific button */
+        .gpay-confirm-button {
+            background-color: var(--orange-warning); /* Distinct color for confirmation */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 15px;
+        }
+
+        .gpay-confirm-button:hover {
+            background-color: #E64A19;
+            transform: translateY(-1px);
+        }
+
+        .gpay-confirm-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .pay-button {
+            background-color: var(--accent-green);
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .pay-button:hover {
+            background-color: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .pay-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .pay-button:disabled {
+            background-color: #b0d2b0; /* Lighter green when disabled */
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        #qrcode-container {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        #qrcode-container canvas {
+            border: 1px solid #ccc;
+            display: block;
+            margin: 0 auto;
+            max-width: 180px;
+            height: auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 550px) {
+            .payment-container {
+                padding: 25px;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            body {
+                padding: 0;
+            }
+            h2 {
+                font-size: 1.8em;
+            }
+            .total-amount-display {
+                font-size: 1.6em;
+            }
+            .payment-option {
+                padding: 15px;
+            }
+            .pay-button {
+                padding: 12px 20px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% load static %}
+    <div class="payment-container">
+        <h2>Complete Your Payment</h2>
+
+        <div class="order-summary">
+            <h3><i class="fas fa-shopping-cart" style="margin-right: 10px; color: var(--primary-green);"></i>Your Order Summary</h3>
+            <div class="order-item" id="orderItemPlaceholder">
+                </div>
+            <p style="margin-top: 20px; font-size: 0.9em; color: var(--text-medium);">
+                <i class="fas fa-map-marker-alt" style="margin-right: 5px; color: #777;"></i>Delivery to: **Your Delivery Address Here**
+            </p>
+        </div>
+
+        <div class="total-amount-display">
+            <span>Total Amount:</span> ₹<span id="finalPaymentAmount">0.00</span>
+        </div>
+
+        <div class="payment-option">
+            <input type="radio" id="gpay" name="upi_option" value="gpay">
+            <label for="gpay">Google Pay</label>
+            <img src="{% static 'images/gpay.png' %}" class="logo">
+        </div>
+
+        <div class="payment-option">
+            <input type="radio" id="paytm" name="upi_option" value="paytm">
+            <label for="paytm">Paytm</label>
+            <img src="{% static 'images/paytm.png' %}" class="logo">
+        </div>
+
+        <div class="payment-option">
+            <input type="radio" id="cod" name="upi_option" value="cod">
+            <label for="cod">Cash on Delivery</label>
+            <img src="{% static 'images/cod.png' %}" class="logo">
+        </div>
+
+        <div class="payment-details" id="gpay_details">
+            <h3>Scan with Google Pay to Pay ₹<span id="gpayAmountDisplay">0.00</span></h3>
+            <div id="qrcode-container"></div>
+            <p style="text-align: center; color: var(--text-light); font-size: 0.9em; margin-top: 15px;">
+                Open your Google Pay app and scan the QR code to pay.
+                <br><strong style="color: var(--orange-warning);">Important: Scan and complete payment first, then click "I have Paid" below.</strong>
+            </p>
+            <button class="gpay-confirm-button" id="gpayConfirmBtn">I have Paid</button>
+        </div>
+
+        <div class="payment-details" id="paytm_details">
+            <h3>Paytm</h3>
+            <label for="upi_id_paytm"><i class="fas fa-user-circle" style="margin-right: 8px; color: #777;"></i>Your UPI ID (Paytm)</label>
+            <input type="text" id="upi_id_paytm" placeholder="e.g., yourname@paytm" autocomplete="off">
+            <p style="color: var(--text-light); font-size: 0.9em;">
+                You will pay ₹<span id="paytmAmountDisplay">0.00</span> via Paytm.
+            </p>
+        </div>
+
+        <div class="payment-details" id="cod_details">
+            <h3>Cash on Delivery</h3>
+            <p style="color: var(--text-light); font-size: 0.95em;">
+                You have selected Cash on Delivery. Please have ₹<span id="codAmountDisplay">0.00</span> ready when your order arrives.
+            </p>
+            <p style="color: #FF5722; font-size: 0.85em; font-weight: 600; margin-top: 15px;">
+                <i class="fas fa-exclamation-triangle" style="margin-right: 5px;"></i>Note: Additional verification may be required for COD orders.
+            </p>
+        </div>
+
+        <button class="pay-button" id="mainPlaceOrderBtn">Place Order</button>
+    </div>
+
+    <script>
+        const paymentOptions = document.querySelectorAll('.payment-option input[type="radio"]');
+        const paymentDetailsDivs = document.querySelectorAll('.payment-details');
+        const qrcodeContainer = document.getElementById('qrcode-container');
+        const mainPlaceOrderBtn = document.getElementById('mainPlaceOrderBtn');
+        const gpayConfirmBtn = document.getElementById('gpayConfirmBtn');
+        const orderItemPlaceholder = document.getElementById('orderItemPlaceholder');
+
+        let actualPaymentAmount = 0;
+        let productName = "Product";
+        let productQuantity = 1; // Default quantity
+        let productImageUrl = "https://via.placeholder.com/70x70/CCCCCC/FFFFFF?text=Product"; // Default image
+        let gpayPaymentConfirmed = false;
+
+        function initializePaymentPage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const amountFromUrl = urlParams.get('amount');
+            const nameFromUrl = urlParams.get('name');
+            const imageFromUrl = urlParams.get('image'); // Get the image URL from the URL parameters
+
+            const finalPaymentAmountElement = document.getElementById('finalPaymentAmount');
+
+            if (amountFromUrl) {
+                const parsedAmount = parseFloat(amountFromUrl);
+                if (!isNaN(parsedAmount)) {
+                    actualPaymentAmount = parsedAmount;
+                    finalPaymentAmountElement.innerText = actualPaymentAmount.toFixed(2);
+                } else {
+                    console.error("Invalid amount received in URL:", amountFromUrl);
+                    finalPaymentAmountElement.innerText = '0.00';
+                }
+            } else {
+                console.warn('No payment amount found in URL. Defaulting to 0.');
+                finalPaymentAmountElement.innerText = '0.00';
+            }
+
+            if (nameFromUrl) {
+                productName = decodeURIComponent(nameFromUrl);
+            } else {
+                console.warn('No product name found in URL. Defaulting to "Product".');
+            }
+
+            if (imageFromUrl) {
+                productImageUrl = decodeURIComponent(imageFromUrl);
+            } else {
+                console.warn('No product image URL found in URL. Using placeholder.');
+            }
+
+            // Populate the order summary with dynamic data
+            orderItemPlaceholder.innerHTML = `
+                <img src="${productImageUrl}" alt="${productName}">
+                <div class="item-details">
+                    <h4>${productName}</h4>
+                    <p>Quantity: ${productQuantity}</p>
+                </div>
+                <div class="item-price-qty">
+                    ₹${actualPaymentAmount.toFixed(2)}
+                </div>
+            `;
+
+            updatePaymentAmountsInDetails();
+            mainPlaceOrderBtn.disabled = true; // Initially disable the main "Place Order" button
+        }
+
+        function updatePaymentAmountsInDetails() {
+            document.getElementById('gpayAmountDisplay').innerText = actualPaymentAmount.toFixed(2);
+            document.getElementById('paytmAmountDisplay').innerText = actualPaymentAmount.toFixed(2);
+            document.getElementById('codAmountDisplay').innerText = actualPaymentAmount.toFixed(2);
+        }
+
+        paymentOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                paymentDetailsDivs.forEach(div => {
+                    div.classList.remove('active');
+                });
+                const selectedOptionId = this.id + '_details';
+                const selectedDetailsDiv = document.getElementById(selectedOptionId);
+
+                gpayPaymentConfirmed = false; // Reset GPay confirmation when selection changes
+
+                if (selectedDetailsDiv) {
+                    selectedDetailsDiv.classList.add('active');
+
+                    if (this.value === 'gpay') {
+                        const upiId = 'karadiyahaiderali7@oksbi';
+                        const currency = 'INR';
+                        const note = 'Payment for Agro-Farm Order';
+                        const upiLink = `upi://pay?pa=${upiId}&am=${actualPaymentAmount.toFixed(2)}&cu=${currency}&tn=${note}`;
+
+                        qrcodeContainer.innerHTML = ''; // Clear previous QR code
+                        new QRCode(qrcodeContainer, upiLink);
+
+                        mainPlaceOrderBtn.disabled = true; // Disable main "Place Order" button for GPay until confirmed
+                        gpayConfirmBtn.style.display = 'block'; // Show the confirm button
+                    } else {
+                        mainPlaceOrderBtn.disabled = false; // Enable for Paytm and COD immediately
+                        gpayConfirmBtn.style.display = 'none'; // Hide the confirm button
+                    }
+                } else {
+                    mainPlaceOrderBtn.disabled = true; // If no option selected or invalid, disable
+                    gpayConfirmBtn.style.display = 'none';
+                }
+            });
+        });
+
+        gpayConfirmBtn.addEventListener('click', function() {
+            gpayPaymentConfirmed = true;
+            mainPlaceOrderBtn.disabled = false; // Enable the main button
+            alert('Please ensure you have completed the payment via Google Pay. Your order will now proceed.');
+            // In a real application, you'd send a request to your backend here
+            // to initiate server-side payment verification.
+        });
+
+        mainPlaceOrderBtn.addEventListener('click', function() {
+            const selectedOption = document.querySelector('input[name="upi_option"]:checked');
+
+            if (!selectedOption) {
+                alert('Please select a payment option.');
+                return;
+            }
+
+            if (selectedOption.value === 'gpay' && !gpayPaymentConfirmed) {
+                alert('Please confirm that you have completed the payment via Google Pay by clicking "I have Paid" first.');
+                return;
+            }
+
+            // Simulate order placement
+            alert(`Order placed successfully for ${productName} (₹${actualPaymentAmount.toFixed(2)}) using ${selectedOption.id}!`);
+            window.location.href = 'order.html?orderSuccess=true'; // Redirect to a success page
+        });
+
+        window.onload = initializePaymentPage;
+    </script>
+</body>
+</html>

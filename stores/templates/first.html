@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome to Agro Farm</title>
+  <style>
+    /* Full viewport height and reset */
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffddb4 0%, #88ab75 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #2c3e50;
+      text-align: center;
+    }
+
+    /* Container for buttons */
+    .container {
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 20px;
+      padding: 40px 60px;
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-weight: 700;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      color: #356859;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    /* Buttons styling */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px 0;
+      margin: 15px 0;
+      border-radius: 40px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition:
+        background 0.3s ease,
+        transform 0.2s ease,
+        box-shadow 0.3s ease;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    /* Admin button - rich forest green */
+    .btn.admin {
+      background: linear-gradient(45deg, #2d6a4f, #52b788);
+      box-shadow: 0 5px 15px rgba(45, 106, 79, 0.6);
+    }
+    .btn.admin:hover, .btn.admin:focus {
+      background: linear-gradient(45deg, #52b788, #2d6a4f);
+      box-shadow: 0 8px 20px rgba(45, 106, 79, 0.8);
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    /* User button - warm auburn */
+    .btn.user {
+      background: linear-gradient(45deg, #a64b2a, #d9822b);
+      box-shadow: 0 5px 15px rgba(166, 75, 42, 0.6);
+    }
+    .btn.user:hover, .btn.user:focus {
+      background: linear-gradient(45deg, #d9822b, #a64b2a);
+      box-shadow: 0 8px 20px rgba(166, 75, 42, 0.8);
+      transform: translateY(-3px);
+      outline: none;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 25px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .btn {
+        font-size: 1.1rem;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-label="Role selection">
+    <h1>AGRO FARM</h1>
+    <a href="/admin/" class="btn admin" role="button" aria-label="Go to Admin page">Admin</a>
+    <a href="home.html" class="btn user" role="button" aria-label="Go to User page">User</a>
+  </div>
+</body>
+</html>

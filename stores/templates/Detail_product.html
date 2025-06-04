@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Product Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Toast Message Styles */
+        .toast-message {
+            visibility: hidden;
+            min-width: 280px; /* Slightly wider */
+            margin-left: -140px; /* Adjust for width */
+            background-color: #9b4040; /* Bright gold/yellow for strong warning */
+            color: #ffffff; /* Dark grey for good contrast */
+            text-align: center;
+            border-radius: 10px; /* More rounded */
+            padding: 15px 25px; /* Generous padding */
+            position: fixed;
+            z-index: 10001;
+            left: 50%;
+            bottom: 30px;
+            font-size: 17px; /* Larger font */
+            font-weight: 700; /* Extra bold text */
+            opacity: 0;
+            transform: translateY(10px); /* Start slightly lower for bounce effect */
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce transition */
+            box-shadow: 0 8px 15px rgba(255, 215, 0, 0.4); /* More prominent shadow with yellow tint */
+            border: 2px solid #ff0000; /* Orange border for extra emphasis */
+        }
+
+        .toast-message.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0); /* Move to final position */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            gap: 20px;
+        }
+
+        /* Simple Product Details Heading */
+        .product-details-heading {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem;
+            color: #ffffff;
+            background-color: #678065;
+            padding: 10px;
+            width: 600px;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 25px;
+        }
+
+        /* Container for image and details */
+        .content-wrapper {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            max-width: 900px;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        /* Product Image */
+        .product-image {
+            flex: 1 1 40%;
+            background: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 15px;
+            object-fit: contain;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Product Details */
+        .product-details {
+            flex: 1 1 60%;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: auto;
+            max-height: 450px; /* Adjusted max height */
+            overflow: hidden; /* This was causing the scroll, remove if you want full content */
+        }
+
+        .product-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            color: #222;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #555;
+            flex-grow: 1;
+            margin-bottom: 15px;
+            /* overflow-y: auto; */ /* Removed to prevent scroll view */
+            max-height: none; /* Removed max-height to show full content */
+            padding-right: 8px;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #e63946;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* Quantity Controls */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .quantity-controls label {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #171142;
+        }
+
+        .quantity-controls button {
+            width: 40px; /* Adjusted width for quantity buttons */
+            background-color: #3a3a99;
+            color: #fcfcfc;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px 0px; /* Adjusted padding */
+            font-size: 1.1rem; /* Larger font for +/- */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 35px; /* Match input height */
+        }
+
+        .quantity-controls button:hover {
+            background-color: #1b1b6c;
+        }
+
+        .quantity-controls input#quantity {
+            width: 80px;
+            height: 35px; /* Consistent height */
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-align: center;
+            /* -moz-appearance: textfield; Hide arrows in Firefox */
+        }
+
+        /* Hide arrows for Chrome, Safari, Edge, Opera */
+        .quantity-controls input#quantity::-webkit-outer-spin-button,
+        .quantity-controls input#quantity::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Buttons */
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .buttons button {
+            flex: 1;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            color: white;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .add-to-cart {
+            background-color: #abb63b;
+            color: rgb(241, 234, 234);
+        }
+
+        .add-to-cart:hover {
+            background-color: #869724;
+            color: white;
+        }
+
+        .order {
+            background-color: #1b7a43;
+            color: rgb(241, 234, 234);
+        }
+
+        .order:hover {
+            background-color: #14532d;
+            color: white;
+        }
+
+        /* Creative Back Button */
+        .back-btn {
+            background-color: #3f51b5; /* Deeper blue */
+            color: white;
+            border: none;
+            border-radius: 20px; /* More rounded */
+            padding: 10px 20px; /* More padding */
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 20px; /* Adjusted margin */
+            margin-top: 10px; /* Adjusted margin from top of the page */
+            transition: all 0.3s ease; /* Smooth transition for all properties */
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+        }
+
+        .back-btn:hover {
+            background-color: #2c3e9a; /* Darker blue on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+                max-width: 350px;
+            }
+
+            .product-details-heading {
+                font-size: 1.8rem; /* Adjust font size for smaller screens */
+                padding: 10px 20px; /* Adjust padding for smaller screens */
+            }
+
+            .product-image, .product-details {
+                flex: none;
+                width: 100%;
+                max-width: 100%;
+                min-height: auto;
+                max-height: none;
+                padding: 10px 0;
+            }
+
+            .product-description {
+                max-height: none; /* Ensure full content on small screens */
+                overflow-y: visible; /* Ensure no scrollbar */
+                margin-bottom: 10px;
+                padding-right: 0;
+            }
+
+            .buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .buttons button {
+                font-size: 0.9rem;
+                padding: 10px 0;
+                width: 100%;
+            }
+
+            .quantity-controls {
+                justify-content: center; /* Center quantity controls on smaller screens */
+            }
+
+            .back-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+                border-radius: 15px;
+                margin-top: 5px; /* Further decrease margin on small screens */
+            }
+        }
+
+        /* --- Confirmation Dialog Styles --- */
+        .confirmation-dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10002; /* Above toast message */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+        }
+
+        .confirmation-dialog-overlay.show {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .confirmation-dialog {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-out;
+            animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+
+        .confirmation-dialog-overlay.show .confirmation-dialog {
+            transform: scale(1);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        .confirmation-dialog h2 {
+            color: #1b7a43;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-dialog p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .confirmation-dialog .dialog-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .confirmation-dialog .dialog-buttons button {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .confirmation-dialog .confirm-btn {
+            background-color: #1b7a43;
+            color: white;
+            border: none;
+        }
+
+        .confirmation-dialog .confirm-btn:hover {
+            background-color: #14532d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(27, 122, 67, 0.4);
+        }
+
+        .confirmation-dialog .cancel-btn {
+            background-color: #e0e0e0;
+            color: #555;
+            border: 1px solid #ccc;
+        }
+
+        .confirmation-dialog .cancel-btn:hover {
+            background-color: #cccccc;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body role="main" aria-label="Product detail">
+    <div id="toastMessage" class="toast-message"></div>
+
+    <button class="back-btn" type="button" aria-label="Back to home" onclick="location.href='home.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
+        </svg>
+        Back
+    </button>
+
+    <h1 class="product-details-heading">Product Details</h1>
+
+    <div class="content-wrapper">
+        <div class="product-image">
+            <img id="item-image" src="https://images.unsplash.com/photo-1606813909176-1a046d6dfd19?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Product Image" />
+        </div>
+        <div class="product-details">
+            <h1 id="item-name" class="product-name">Modern Watch</h1>
+            <p id="item-description" class="product-description">
+                A sleek, stylish modern watch with a durable leather strap and a bright, clear display. Perfect for both casual and formal occasions.
+            </p>
+            <div id="item-price" class="product-price">$199.99</div>
+
+            <div class="quantity-controls">
+                <label for="quantity">Quantity:</label>
+                <button type="button" onclick="changeQuantity(-1)">-</button>
+                <input type="number" id="quantity" value="1" min="1" max="10" onchange="validateQuantity(this)" aria-label="Product Quantity" />
+                <button type="button" onclick="changeQuantity(1)">+</button>
+            </div>
+
+            <div class="buttons">
+                <button id="add-to-cart-btn" class="add-to-cart" aria-label="Add Modern Watch to cart"
+                        onclick="event.stopPropagation();
+                                 const name = document.getElementById('item-name').textContent;
+                                 const price = document.getElementById('item-price').textContent.replace('$', ''); // Remove '$' sign
+                                 const imageUrl = document.getElementById('item-image').src;
+                                 const quantity = parseInt(document.getElementById('quantity').value);
+                                 addToCart(name, price, imageUrl, quantity);">
+                    Add to Cart
+                </button>
+
+                <button id="order-btn" class="order" type="button" aria-label="Order Modern Watch now">
+                    Order
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmationDialogOverlay" class="confirmation-dialog-overlay">
+        <div class="confirmation-dialog">
+            <h2>Confirm Your Order</h2>
+            <p>You are about to order <strong id="confirm-quantity">1</strong> of <strong id="confirm-product-name">Modern Watch</strong> for a total of <strong id="confirm-total-price">$199.99</strong>. Would you like to proceed?</p>
+            <div class="dialog-buttons">
+                <button class="confirm-btn" id="confirmOrderButton">Confirm</button>
+                <button class="cancel-btn" onclick="hideConfirmationDialog()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get URL parameters as an object
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const pairs = queryString.split("&").filter(Boolean);
+            for (const pair of pairs) {
+                const [key, value] = pair.split("=");
+                params[decodeURIComponent(key)] = decodeURIComponent(value || "");
+            }
+            return params;
+        }
+
+        function sanitizeHTML(str) {
+            // Simple sanitize to prevent XSS attacks; encode HTML entities
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = getQueryParams();
+
+            // Update product image if passed and valid
+            if(params.image) {
+                const imageEl = document.getElementById("item-image");
+                imageEl.src = params.image;
+                imageEl.alt = `Product Image: ${sanitizeHTML(params.name || 'Product')}`;
+            }
+
+            // Update product name if passed
+            if(params.name) {
+                const nameEl = document.getElementById("item-name");
+                nameEl.textContent = sanitizeHTML(params.name);
+                // Update aria labels on buttons accordingly
+                const addToCartBtn = document.getElementById("add-to-cart-btn");
+                const orderBtn = document.getElementById("order-btn");
+                if (addToCartBtn) {
+                    addToCartBtn.setAttribute("aria-label", `Add ${params.name} to cart`);
+                }
+                if (orderBtn) {
+                    orderBtn.setAttribute("aria-label", `Order ${params.name} now`);
+                }
+            }
+
+            // Update product description if passed
+            if(params.description) {
+                const descEl = document.getElementById("item-description");
+                descEl.textContent = sanitizeHTML(params.description);
+            }
+
+            // Update product price if passed
+            if(params.price) {
+                const priceEl = document.getElementById("item-price");
+                // Prepend "$" for display
+                priceEl.textContent = "$" + sanitizeHTML(params.price);
+            }
+
+            // Event listener for the Order button to show the confirmation dialog
+            document.getElementById('order-btn').addEventListener('click', showConfirmationDialog);
+        });
+
+        // Function to show toast messages
+        function showToast(message) {
+            const toast = document.getElementById("toastMessage");
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 1500); // 1.5 seconds
+        }
+
+        function changeQuantity(change) {
+            const quantityInput = document.getElementById('quantity');
+            let currentValue = parseInt(quantityInput.value);
+            currentValue += change;
+
+            // Ensure quantity stays within min/max limits
+            if (currentValue < 1) {
+                currentValue = 1;
+            } else if (currentValue > 10) { // Assuming a max quantity of 10
+                currentValue = 10;
+            }
+            quantityInput.value = currentValue;
+        }
+
+        function validateQuantity(input) {
+            let value = parseInt(input.value);
+            if (isNaN(value) || value < 1) {
+                input.value = 1;
+            } else if (value > 10) { // Assuming a max quantity of 10
+                input.value = 10;
+            }
+        }
+
+        function addToCart(name, price, image, quantity) {
+            // Construct the URL using the dynamic data including quantity
+            const url = `/cartinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&image=${encodeURIComponent(image)}&quantity=${encodeURIComponent(quantity)}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'carts.html'; // Redirect to the cart page after successful addition
+                    } else {
+                        console.error('Failed to add item to cart');
+                        showToast(" !! Failed to add item to cart , account is required  !! "); // Show error toast
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error:', error);
+                    showToast("An error occurred. Please check your connection."); // Show network error toast
+                });
+        }
+
+        // --- Confirmation Dialog Functions ---
+        let globalName, globalPrice, globalQuantity, globalImage; // Store values for dialog
+
+        function showConfirmationDialog() {
+            globalName = document.getElementById('item-name').textContent;
+            globalPrice = document.getElementById('item-price').textContent.replace('$', '');
+            globalQuantity = parseInt(document.getElementById('quantity').value);
+            globalImage = document.getElementById('item-image').src;
+
+            const totalPrice = (parseFloat(globalPrice) * globalQuantity).toFixed(2);
+
+            document.getElementById('confirm-product-name').textContent = globalName;
+            document.getElementById('confirm-quantity').textContent = globalQuantity;
+            document.getElementById('confirm-total-price').textContent = `$${totalPrice}`;
+
+            document.getElementById('confirmationDialogOverlay').classList.add('show');
+        }
+
+        function hideConfirmationDialog() {
+            document.getElementById('confirmationDialogOverlay').classList.remove('show');
+        }
+
+        document.getElementById('confirmOrderButton').addEventListener('click', () => {
+            hideConfirmationDialog(); // Hide dialog immediately
+            addtoorder(globalName, globalPrice, globalQuantity, globalImage); // Proceed with order logic
+        });
+
+        // order logic fn start here
+        function addtoorder(name, price, quantity, image) {
+            // Construct the URL with price and quantity
+            const url = `/orderinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&quantity=${encodeURIComponent(quantity)}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        // Pass product name, quantity, and total price to payment page for confirmation
+                        const totalPrice = (parseFloat(price) * quantity).toFixed(2);
+                        window.location.href = `payment.html?amount=${encodeURIComponent(totalPrice)}&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}&quantity=${encodeURIComponent(quantity)}`;
+                    } else {
+                        console.error('Failed to add item to order');
+                        showToast(" !! Failed to place order , account is required . !! ");
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error:', error);
+                    showToast("An error occurred. Please try again.");
+                });
+        }
+    </script>
+</body>
+</html>

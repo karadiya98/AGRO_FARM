@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Shopping Cart</title>
+    <style>
+        /* Reset and base */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 70px; /* Slightly taller for more presence */
+            background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
+            border-radius: 0; /* Full width, no rounded corners for a sleek look */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Distribute logo, search, and nav links */
+            padding: 0 30px; /* More padding */
+            z-index: 10000;
+        }
+
+        /* AGRO-FARM Logo and Text */
+        nav .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Slightly more space */
+        }
+
+        nav .main-logo-image {
+            height: 45px; /* Larger logo */
+            width: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2); /* Subtle shadow for logo */
+        }
+
+        nav .logo {
+            font-size: 1.8em; /* Larger font size */
+            font-weight: 800; /* Bolder */
+            letter-spacing: 2.5px; /* More prominent spacing */
+            color: #ffffff; /* Pure white for contrast */
+            cursor: pointer;
+            font-style: italic;
+            user-select: none;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Enhanced text shadow */
+        }
+
+        /* Search and country container */
+        .nav-search-country {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* More space */
+            flex: 1; /* Allows it to grow and take available space between logo and nav links */
+            max-width: 700px; /* Wider search area */
+            margin: 0 30px; /* More margin */
+        }
+
+        /* Search input container */
+        .nav-search-country .search-input-container {
+            position: relative; /* Essential for absolute positioning of icon */
+            flex: 1;
+        }
+
+        /* Search input */
+        .search-input {
+            width: 100%;
+            padding: 10px 45px 10px 20px; /* More padding, crucial for icon space */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            font-size: 1.05em; /* Slightly larger font */
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #2e8b57; /* More vibrant focus shadow */
+            background-color: #f7fff7; /* Very light green on focus */
+        }
+        /* Search icon inside input */
+        .search-icon {
+            position: absolute;
+            right: 15px; /* Position from the right edge of its parent (search-input-container) */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2e8b57; /* Darker green icon */
+            font-size: 1.3em; /* Larger icon */
+            pointer-events: none; /* Allows clicks to pass through to the input */
+            transition: color 0.3s ease; /* Smooth color transition */
+        }
+        .search-input:focus + .search-icon {
+            color: #1B7A43; /* Change icon color on input focus */
+        }
+
+        /* Search select */
+        .nav-search-country select.select,
+        .nav-search-country select.indian {
+            margin-right: 80px;
+            padding: 10px 15px; /* More padding */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            background-color: #ffffff;
+            font-weight: 700; /* Bolder text */
+            color: #2e8b57; /* Darker green */
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #2e8b57 50%),
+                linear-gradient(135deg, #2e8b57 50%, transparent 50%);
+            background-position:
+                calc(100% - 25px) calc(1em + 2px),
+                calc(100% - 18px) calc(1em + 2px);
+            background-size: 7px 7px; /* Larger arrow */
+            background-repeat: no-repeat;
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .nav-search-country select.select:hover,
+        .nav-search-country select.indian:hover {
+            box-shadow: 0 6px 15px rgba(46, 139, 87, 0.7); /* More prominent hover shadow */
+            background-color: #e6ffe6; /* Light green on hover */
+        }
+
+        /* Navigation Links (Home, Signin/Signup, Carts, Order, Logout) */
+        nav .nav-links-section {
+            display: flex;
+            list-style: none;
+            font-size: small;
+            margin: 0; /* Remove default margin */
+            padding: 0;
+            gap: 5px; /* Reduced gap between links */
+            /* Crucial for aligning to the right */
+            justify-content: flex-end; /* Aligns all items to the end (right) */
+            align-items: center; /* Vertically align items */
+            margin-top: 15px;
+            flex-shrink: 0; /* Prevent it from shrinking */
+        }
+
+        nav .nav-links-section li a {
+            color: black; /* Lighter grey for subtle default */
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 10px; /* Adjusted padding */
+            border-radius: 8px; /* Slightly more rounded */
+            transition: background-color 0.4s ease, color 0.4s ease, transform 0.2s ease; /* Added transform */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        nav .nav-links-section li a img {
+            height: 15px; /* Smaller icons */
+            width: 15px; /* Smaller icons */
+            margin-bottom: 2px; /* Less space below icon */
+            filter: brightness(0) invert(1); /* White icons by default */
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        nav .nav-links-section li a span {
+            font-size: 0.75em; /* Smaller text */
+            font-weight: 700; /* Bolder text */
+            white-space: nowrap;
+            color: black; /* Slightly greenish white */
+            transition: color 0.3s ease;
+        }
+
+        nav .nav-links-section li a:hover {
+            background-color: #8bc34a; /* Lighter green on hover */
+            color: #ffffff; /* White text on hover */
+            font-weight: 800;
+            transform: translateY(-3px); /* Subtle lift effect */
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+        }
+
+        nav .nav-links-section li a:hover img {
+            transform: scale(1.15); /* More pronounced icon scale */
+            filter: brightness(1) invert(0); /* Original color icons on hover */
+        }
+
+        nav .nav-links-section li a:hover span {
+            color: #1B7A43; /* Darker green for text on hover */
+        }
+
+        /* --- ACTIVE NAVIGATION LINK STYLES (MODIFIED) --- */
+        nav .nav-links-section li a.active {
+            border-bottom: 4px solid #ffffff; /* Thicker white underline */
+            padding-bottom: 6px; /* More space below underline */
+            background-color: #388e3c; /* Darker green for active state */
+            color: #ffffff; /* White text for active state */
+            font-weight: 900; /* Even bolder */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Stronger shadow for active */
+        }
+
+        nav .nav-links-section li a.active span {
+            color: #ffffff; /* White text for active state */
+        }
+
+        nav .nav-links-section li a.active img {
+            filter: brightness(1) invert(0); /* Original color for active icons */
+        }
+
+        /* Cart specific styles */
+        .cart-container {
+            margin-top: 80px; /* Adjust to prevent overlap with fixed nav */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1B7A43;
+            margin-bottom: 20px;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .cart-table th, .cart-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .cart-table th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+
+        .cart-table img {
+            max-width: 80px;
+            height: auto;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .cart-table .price {
+            font-weight: bold;
+            color: #ff6f00;
+        }
+
+        .cart-table .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-table .quantity-controls button {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .cart-table .quantity-controls button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .cart-table .quantity-controls input[type="number"] {
+            width: 50px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .cart-table .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Updated Styles for Order and Remove Buttons */
+        .cart-table .order-btn {
+            background-color: #1B7A43; /* Agro-Farm's green */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .cart-table .order-btn:hover {
+            background-color: #14532d; /* Darker green on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        .cart-table .remove-btn {
+            background-color: #dc3545; /* Red for remove */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .cart-table .remove-btn:hover {
+            background-color: #a31422; /* Darker red on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        .empty-cart {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+        }
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toast {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transform: translateY(-20px);
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            background-color: #28a745;
+        }
+
+        .toast.error {
+            background-color: #dc3545;
+        }
+
+        .toast.info {
+            background-color: #17a2b8;
+        }
+
+        /* Confirmation Box Styles */
+        .confirmation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10002;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .confirmation-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .confirmation-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .confirmation-overlay.show .confirmation-box {
+            transform: translateY(0);
+        }
+
+        .confirmation-box h3 {
+            color: #1B7A43;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .confirmation-box p {
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .confirmation-box-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .confirmation-box-buttons button {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .confirmation-box-buttons .confirm-yes {
+            background-color: #1B7A43;
+            color: white;
+        }
+
+        .confirmation-box-buttons .confirm-yes:hover {
+            background-color: #14532d;
+            transform: translateY(-2px);
+        }
+
+        .confirmation-box-buttons .confirm-no {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .confirmation-box-buttons .confirm-no:hover {
+            background-color: #a31422;
+            transform: translateY(-2px);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    {% load static %}
+
+<nav>
+    <div class="logo-section">
+        <img src="{% static 'images/agro-removebg-preview.png' %}" alt="AGRO-FARM Logo" class="main-logo-image">
+        <div class="logo">AGRO-FARM</div>
+    </div>
+
+    <div class="nav-search-country">
+        <div class="search-input-container">
+            <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
+            <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+
+        <select class="indian" aria-label="Select country">
+            <option value="india">India</option>
+            <option value="sri_lanka">Sri Lanka</option>
+            <option value="canada">Canada</option>
+            <option value="australia">Australia</option>
+        </select>
+    </div>
+
+    <ul class="nav-links-section">
+        <li><a href="{% url 'home' %}">
+            <img src="{% static 'images/download-removebg-preview (1).png' %}" alt="Home Icon">
+            <span>Home</span>
+        </a></li>
+        <li>
+            {% if profile_name %}
+                <a href="{% url 'profile' %}">
+                    <img src="{% static 'images/p3-removebg-preview.png' %}" alt="Profile Icon">
+                    <span>{{ profile_name }}</span>
+                </a>
+            {% else %}
+                <a href="{% url 'second' %}">
+                    <img src="{% static 'images/user-removebg-preview.png' %}" alt="Sign In/Up Icon">
+                    <span>Signin/Signup</span>
+                </a>
+            {% endif %}
+        </li>
+        <li><a href="{% url 'carts' %}" class="active">
+            <img src="{% static 'images/new_cart-removebg-preview.png' %}" alt="Carts Icon">
+            <span>Carts</span>
+        </a></li>
+        <li><a href="{% url 'order' %}">
+            <img src="{% static 'images/images-removebg-preview (3).png' %}" alt="Order Icon">
+            <span>Order</span>
+        </a></li>
+        <li><a href="{% url 'profile' %}">
+            <img src="{% static 'images/save-removebg-preview.png' %}" alt="Logout Icon">
+            <span>Logout</span>
+        </a></li>
+    </ul>
+</nav>
+    <div class="cart-container">
+        <h1>Your Shopping Cart</h1>
+
+        {# Django Messages for server-side feedback #}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if cart_items %}
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Product ID</th>
+                        <th>Product image</th>
+                        <th>Product Name</th>
+                        <th>Product Price</th>
+                        <th>Product Quantity</th>
+                        <th>Total Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr data-item-id="{{ item.id }}">
+                            <td>{{ item.productid }}</td>
+                            <td>
+                                {% if item.image %}
+                                    <img src="{{ item.image }}" alt="{{ item.name }}">
+                                {% else %}
+                                    <span>No Image</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.name }}</td>
+                            <td class="price">${{ item.price }}</td>
+                            <td >
+                                <div class="quantity-controls">
+                                    <button onclick="updateQuantity('{{ item.id }}', 'decrease')">-</button>
+                                    <input type="number" id="quantity-{{ item.id }}" value="{{ item.quantity }}" min="1">
+                                    <button onclick="updateQuantity('{{ item.id }}', 'increase')">+</button>
+                                </div>
+                                <!-- {{item.quantity}} -->
+                            </td>
+                                <td class="price">
+                                {{item.total_amount}}
+                                </td>
+                            <td>
+                                <!-- for removing from cart / add to order  -->
+                                 {# CORRECTED: item_id hidden input is now INSIDE the form #}
+                                <form action="{% url 'remove_item_cart' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item.productid" value="{{ item.productid }}">
+                                    <button type="submit" class="order-btn" onclick="addtoorder('{{ item.name }}','{{ item.price }}','{{ item.quantity }}','{{ item.image }}')">Order</button>
+                                </form>
+                                <!-- <button class="order-btn" onclick="addtoorder('{{ item.name }}','{{ item.price }}','{{ item.quantity }}','{{ item.image }}')">Order</button> -->
+
+                                {# CORRECTED: item_id hidden input is now INSIDE the form #}
+                                <form action="{% url 'remove_item_cart' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item.productid" value="{{ item.productid }}">
+                                    <button type="submit" class="remove-btn">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="empty-cart">Your cart is empty.</p>
+        {% endif %}
+    </div>
+
+    {# Toast Container #}
+    <div id="toast-container" class="toast-container"></div>
+
+    {# Confirmation Box HTML Structure #}
+    <div id="confirmation-overlay" class="confirmation-overlay">
+        <div class="confirmation-box">
+            <h3>Remove Item?</h3>
+            <p>Quantity is 1. Do you want to remove this item completely from your cart?</p>
+            <div class="confirmation-box-buttons">
+                <button class="confirm-yes" id="confirm-yes">Yes, Remove</button>
+                <button class="confirm-no" id="confirm-no">No, Keep</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to get CSRF token from cookies (for Django)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Function to display a toast notification
+        function showToast(message, type = 'info', duration = 3000) {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.classList.add('toast', type);
+            toast.textContent = message;
+
+            toastContainer.appendChild(toast);
+
+            // Trigger reflow to ensure transition animation
+            void toast.offsetWidth;
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.addEventListener('transitionend', () => {
+                    toast.remove();
+                }, { once: true });
+            }, duration);
+        }
+
+        // Function to show the custom confirmation box
+        function showConfirmation(message) {
+            const overlay = document.getElementById('confirmation-overlay');
+            const messageParagraph = overlay.querySelector('.confirmation-box p');
+            messageParagraph.textContent = message;
+
+            return new Promise((resolve) => {
+                const confirmYes = document.getElementById('confirm-yes');
+                const confirmNo = document.getElementById('confirm-no');
+
+                const handleYes = () => {
+                    overlay.classList.remove('show');
+                    confirmYes.removeEventListener('click', handleYes);
+                    confirmNo.removeEventListener('click', handleNo);
+                    resolve(true);
+                };
+
+                const handleNo = () => {
+                    overlay.classList.remove('show');
+                    confirmYes.removeEventListener('click', handleYes);
+                    confirmNo.removeEventListener('click', handleNo);
+                    resolve(false);
+                };
+
+                confirmYes.addEventListener('click', handleYes);
+                confirmNo.addEventListener('click', handleNo);
+
+                overlay.classList.add('show');
+            });
+        }
+
+
+        // Function to update quantity (remains largely the same, but now uses showToast and custom confirmation)
+        async function updateQuantity(itemId, action) {
+            const quantityInput = document.getElementById(`quantity-${itemId}`);
+            let currentQuantity = parseInt(quantityInput.value);
+            const originalQuantity = parseInt(quantityInput.dataset.originalValue || quantityInput.value); // Ensure originalValue is set
+
+            if (action === 'increase') {
+                currentQuantity++;
+            } else if (action === 'decrease' && currentQuantity > 1) {
+                currentQuantity--;
+            } else if (action === 'decrease' && currentQuantity === 1) {
+                const confirmed = await showConfirmation('Quantity is 1. Do you want to remove this item completely from your cart?');
+                if (confirmed) {
+                    // Find the form associated with this item and submit it for removal
+                    const itemRow = document.querySelector(`tr[data-item-id="${itemId}"]`);
+                    if (itemRow) {
+                        const removeForm = itemRow.querySelector('form');
+                        if (removeForm) {
+                            removeForm.submit(); // Submit the form to trigger Django's remove_item_cart view
+                            return; // Exit function after submission
+                        }
+                    }
+                }
+                return; // Prevent updating if user cancels or no form found
+            }
+
+            // Only proceed if quantity actually changed
+            if (currentQuantity === originalQuantity) {
+                return;
+            }
+
+            quantityInput.value = currentQuantity; // Optimistic UI update
+
+            try {
+                const response = await fetch(`/update_cart/${itemId}/`, { // Ensure this URL is correctly configured in Django
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ quantity: currentQuantity })
+                });
+
+                if (response.ok) {
+                    const data = await response.json(); // Assuming your Django view returns JSON
+                    showToast(data.message || 'Quantity updated successfully!', 'success');
+                    quantityInput.dataset.originalValue = currentQuantity; // Update original value on success
+                } else {
+                    const errorData = await response.json(); // Assuming error message from server
+                    showToast(errorData.error || 'Failed to update quantity.', 'error');
+                    quantityInput.value = originalQuantity; // Revert UI on failure
+                }
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+                showToast('An error occurred while updating quantity.', 'error');
+                quantityInput.value = originalQuantity; // Revert UI on network error
+            }
+        }
+
+        // Initial setup for original quantity values
+        document.addEventListener('DOMContentLoaded', () => {
+            const quantityInputs = document.querySelectorAll('.cart-table input[type="number"]');
+            quantityInputs.forEach(input => {
+                input.dataset.originalValue = input.value;
+            });
+
+            // Handle Django messages (if any) and display them as toasts
+            const messagesDiv = document.querySelector('.messages');
+            if (messagesDiv) {
+                Array.from(messagesDiv.children).forEach(msgElement => {
+                    const message = msgElement.textContent.trim();
+                    const type = msgElement.classList.contains('alert-success') ? 'success' :
+                                 msgElement.classList.contains('alert-error') ? 'error' :
+                                 msgElement.classList.contains('alert-info') ? 'info' :
+                                 'info'; // Default type
+                    showToast(message, type);
+                });
+                messagesDiv.remove(); // Remove the original Django messages div after displaying them as toasts
+            }
+        });
+
+
+    // Function to redirect to payment page with a single item's price
+    // function redirectToPaymentSingleItem(price,name,image) {
+    //     // Construct the URL with the price as a query parameter
+    //     // encodeURIComponent is good practice for URL parameters, especially for strings,
+    //     // but for numbers it's less critical. Still, it doesn't hurt.
+    //     window.location.href = `payment.html?amount=${encodeURIComponent(price)}&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}` // Redirect to the order page after successful addition
+    // }
+
+
+      // order logic fn start here
+        function addtoorder(name, price, quantity,image) {
+            // Construct the URL with price and quantity
+            const url = `/orderinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&quantity=${encodeURIComponent(quantity)}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = `payment.html?amount=${encodeURIComponent(price)}&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}` // Redirect to the order page after successful addition
+                    } else {
+                        console.error('Failed to add item to order');
+                        showToast(" !! Failed to place order , account is required . !! ");
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error:', error);
+                    showToast("An error occurred. Please try again.");
+                });
+        }
+
+    </script>
+</body>
+</html>

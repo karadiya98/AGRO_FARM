@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Order Page - Agro Farm</title>
+    <style>
+        /* Reset and base */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8; /* Consistent background with cart page */
+            color: #333;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex; /* Use flexbox for body to manage layout */
+            flex-direction: column; /* Stack children vertically */
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        /* Navigation Bar - Creative Version (kept as is, per request) */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 70px; /* Slightly taller for more presence */
+            background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
+            border-radius: 0; /* Full width, no rounded corners for a sleek look */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Distribute logo, search, and nav links */
+            padding: 0 30px; /* More padding */
+            z-index: 10000;
+        }
+
+        /* AGRO-FARM Logo and Text */
+        nav .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Slightly more space */
+        }
+
+        nav .main-logo-image {
+            height: 45px; /* Larger logo */
+            width: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2); /* Subtle shadow for logo */
+        }
+
+        nav .logo {
+            font-size: 1.8em; /* Larger font size */
+            font-weight: 800; /* Bolder */
+            letter-spacing: 2.5px; /* More prominent spacing */
+            color: #ffffff; /* Pure white for contrast */
+            cursor: pointer;
+            font-style: italic;
+            user-select: none;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Enhanced text shadow */
+        }
+
+        /* Search and country container */
+        .nav-search-country {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* More space */
+            flex: 1; /* Allows it to grow and take available space between logo and nav links */
+            max-width: 700px; /* Wider search area */
+            margin: 0 30px; /* More margin */
+        }
+
+        /* Search input container */
+        .nav-search-country .search-input-container {
+            position: relative; /* Essential for absolute positioning of icon */
+            flex: 1;
+        }
+
+        /* Search input */
+        .search-input {
+            width: 100%;
+            padding: 10px 45px 10px 20px; /* More padding, crucial for icon space */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            font-size: 1.05em; /* Slightly larger font */
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #2e8b57; /* More vibrant focus shadow */
+            background-color: #f7fff7; /* Very light green on focus */
+        }
+        /* Search icon inside input */
+        .search-icon {
+            position: absolute;
+            right: 15px; /* Position from the right edge of its parent (search-input-container) */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2e8b57; /* Darker green icon */
+            font-size: 1.3em; /* Larger icon */
+            pointer-events: none; /* Allows clicks to pass through to the input */
+            transition: color 0.3s ease; /* Smooth color transition */
+        }
+        .search-input:focus + .search-icon {
+            color: #1B7A43; /* Change icon color on input focus */
+        }
+
+        /* Search select */
+        .nav-search-country select.select,
+        .nav-search-country select.indian {
+            margin-right: 80px;
+            padding: 10px 15px; /* More padding */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            background-color: #ffffff;
+            font-weight: 700; /* Bolder text */
+            color: #2e8b57; /* Darker green */
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #2e8b57 50%),
+                linear-gradient(135deg, #2e8b57 50%, transparent 50%);
+            background-position:
+                calc(100% - 25px) calc(1em + 2px),
+                calc(100% - 18px) calc(1em + 2px);
+            background-size: 7px 7px; /* Larger arrow */
+            background-repeat: no-repeat;
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .nav-search-country select.select:hover,
+        .nav-search-country select.indian:hover {
+            box-shadow: 0 6px 15px rgba(46, 139, 87, 0.7); /* More prominent hover shadow */
+            background-color: #e6ffe6; /* Light green on hover */
+        }
+
+        /* Navigation Links (Home, Signin/Signup, Carts, Order, Logout) */
+        nav .nav-links-section {
+            display: flex;
+            list-style: none;
+            font-size: small;
+            margin: 0; /* Remove default margin */
+            padding: 0;
+            gap: 5px; /* Reduced gap between links */
+            /* Crucial for aligning to the right */
+            justify-content: flex-end; /* Aligns all items to the end (right) */
+            align-items: center; /* Vertically align items */
+            margin-top: 15px;
+            flex-shrink: 0; /* Prevent it from shrinking */
+        }
+
+        nav .nav-links-section li a {
+            color: black; /* Lighter grey for subtle default */
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 10px; /* Adjusted padding */
+            border-radius: 8px; /* Slightly more rounded */
+            transition: background-color 0.4s ease, color 0.4s ease, transform 0.2s ease; /* Added transform */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        nav .nav-links-section li a img {
+            height: 15px; /* Smaller icons */
+            width: 15px; /* Smaller icons */
+            margin-bottom: 2px; /* Less space below icon */
+            filter: brightness(0) invert(1); /* White icons by default */
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        nav .nav-links-section li a span {
+            font-size: 0.75em; /* Smaller text */
+            font-weight: 700; /* Bolder text */
+            white-space: nowrap;
+            color: black; /* Slightly greenish white */
+            transition: color 0.3s ease;
+        }
+
+        nav .nav-links-section li a:hover {
+            background-color: #8bc34a; /* Lighter green on hover */
+            color: #ffffff; /* White text on hover */
+            font-weight: 800;
+            transform: translateY(-3px); /* Subtle lift effect */
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+        }
+
+        nav .nav-links-section li a:hover img {
+            transform: scale(1.15); /* More pronounced icon scale */
+            filter: brightness(1) invert(0); /* Original color icons on hover */
+        }
+
+        nav .nav-links-section li a:hover span {
+            color: #1B7A43; /* Darker green for text on hover */
+        }
+
+        /* --- ACTIVE NAVIGATION LINK STYLES (MODIFIED) --- */
+        nav .nav-links-section li a.active {
+            border-bottom: 4px solid #ffffff; /* Thicker white underline */
+            padding-bottom: 6px; /* More space below underline */
+            background-color: #388e3c; /* Darker green for active state */
+            color: #ffffff; /* White text for active state */
+            font-weight: 900; /* Even bolder */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Stronger shadow for active */
+        }
+
+        nav .nav-links-section li a.active span {
+            color: #ffffff; /* White text for active state */
+        }
+
+        nav .nav-links-section li a.active img {
+            filter: brightness(1) invert(0); /* Original color for active icons */
+        }
+
+
+        /* Order specific styles */
+        .order-container {
+            flex-grow: 1; /* Allow it to take up remaining vertical space */
+            margin-top: 90px; /* More space for taller fixed navigation bar */
+            padding: 30px; /* Increased padding */
+            background-color: #fff;
+            border-radius: 12px; /* Softer rounded corners */
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1); /* Enhanced shadow */
+            max-width: 1200px; /* Max width for better readability on large screens */
+            width: 95%; /* Occupy full viewport width */
+            margin-left: auto; /* Center the container */
+            margin-right: auto; /* Center the container */
+            overflow-y: auto; /* Enable vertical scrolling if content overflows */
+        }
+
+        h1 {
+            text-align: center;
+            color: #1B7A43;
+            margin-bottom: 30px; /* More space below heading */
+            font-size: 2.5rem; /* Larger font size */
+            font-weight: 800; /* Bolder font */
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate; /* Use separate for rounded corners on cells */
+            border-spacing: 0; /* Remove default spacing */
+            margin-bottom: 30px; /* More space below table */
+            table-layout: auto; /* Allow columns to auto-size */
+            border-radius: 10px; /* Rounded corners for the entire table */
+            overflow: hidden; /* Hide overflowing content for rounded corners */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); /* Subtle shadow for the table */
+        }
+
+        th, td {
+            padding: 15px; /* More padding for better spacing */
+            border-bottom: 1px solid #eee; /* Lighter border */
+            text-align: left;
+            color: #444; /* Slightly darker text for readability */
+            font-size: 1.05rem; /* Slightly larger font */
+            word-wrap: break-word; /* Allow long text to wrap */
+            vertical-align: middle; /* Vertically align content */
+        }
+
+        th {
+            background-color: #eaf7ed; /* Light green header background */
+            font-weight: 700;
+            color: #2e8b57; /* Darker green for header text */
+            text-transform: uppercase; /* Uppercase headers */
+            font-size: 0.9rem; /* Slightly smaller for uppercase */
+            letter-spacing: 0.5px;
+        }
+
+        /* Zebra striping for table rows */
+        tbody tr:nth-child(even) {
+            background-color: #f9fdfa; /* Very light green for even rows */
+        }
+
+        tbody tr:hover {
+            background-color: #e0ffe0; /* Lighter green on row hover */
+            transform: translateY(-2px); /* Subtle lift effect */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        img.product-img {
+            max-width: 70px; /* Slightly smaller image */
+            height: auto;
+            border-radius: 8px; /* Slightly more rounded image corners */
+            vertical-align: middle;
+            margin-right: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px; /* Pill-shaped badges */
+            display: inline-block; /* Allows padding and border-radius to apply properly */
+            text-transform: capitalize; /* Capitalize the first letter */
+            font-size: 0.85rem;
+            letter-spacing: 0.2px;
+        }
+
+        .status-pending {
+            background-color: #fff3e0; /* Light orange background */
+            color: #ff6f00; /* Orange text */
+            border: 1px solid #ff6f00;
+        }
+        .status-processing {
+            background-color: #e0f2f7; /* Light blue background */
+            color: #007bff; /* Blue text */
+            border: 1px solid #007bff;
+        }
+        .status-shipped {
+            background-color: #e8f5e9; /* Light green background */
+            color: #28a745; /* Green text */
+            border: 1px solid #28a745;
+        }
+        .status-delivered {
+            background-color: #e1f5fe; /* Light blue/green background */
+            color: #1B7A43; /* Darker green text */
+            border: 1px solid #1B7A43;
+        }
+        .status-cancelled {
+            background-color: #ffebee; /* Light red background */
+            color: #dc3545; /* Red text */
+            border: 1px solid #dc3545;
+        }
+
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+            width: 90px;
+            margin-bottom: 5px;
+            border: none;
+            padding: 10px 18px; /* Larger padding */
+            border-radius: 8px; /* Slightly more rounded */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 0.95rem; /* Slightly larger font */
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+        }
+        .btn-cancel:hover {
+            background-color: #a31422;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        .empty-message {
+            text-align: center;
+            font-style: italic;
+            color: #777;
+            margin-top: 40px; /* More space */
+            padding: 30px; /* Increased padding */
+            font-size: 1.2rem; /* Larger font size */
+            background-color: #f7f9fb; /* Light background for the message */
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px; /* Space between icon and text */
+        }
+        .empty-message i {
+            font-size: 2em; /* Larger icon */
+            color: #a0a0a0;
+        }
+
+        button.back-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px; /* Softer rounded corners */
+            padding: 12px 25px; /* More generous padding */
+            font-weight: bold;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto; /* Center and provide more top/bottom margin */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1.05rem; /* Slightly larger font */
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+        }
+        button.back-btn:hover {
+            background-color: #03458a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        /* toast styles start - Copied directly from the second HTML */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            font-style: italic;
+            font-weight: 700;
+            padding: 15px;
+            margin-top: 60px; /* Adjusted to be below the fixed nav */
+            border-radius: 5px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #toast.show {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease-in-out;
+        }
+        /* toast styles end */
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 10px;
+                height: auto; /* Allow nav height to adjust if content wraps */
+                flex-wrap: wrap; /* Allow nav content to wrap */
+                justify-content: center; /* Center nav items when wrapped */
+                padding-top: 10px; /* Add some top padding when wrapped */
+                padding-bottom: 10px; /* Add some bottom padding when wrapped */
+            }
+            nav .logo {
+                font-size: 1.5em; /* Slightly smaller logo font */
+                width: 100%; /* Make logo take full width when wrapped */
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            nav ul {
+                gap: 5px;
+                width: 100%; /* Make ul take full width when wrapped */
+                justify-content: center; /* Center nav links when wrapped */
+            }
+            nav ul li a {
+                padding: 4px 8px;
+            }
+            .nav-search-country {
+                margin: 10px 0; /* Adjust margin for wrapped elements */
+                flex-basis: 100%; /* Take full width on smaller screens */
+                order: 1; /* Place search/country section below logo */
+            }
+            .search-input-container {
+                flex-grow: 1;
+            }
+            .nav-search-country select {
+                flex-shrink: 0; /* Prevent select from shrinking too much */
+            }
+
+            .order-container {
+                padding: 15px;
+                margin-top: 150px; /* More space for wrapped nav. Adjust based on actual nav height */
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            th, td {
+                padding: 10px 5px; /* Adjusted padding for smaller screens */
+                font-size: 0.9rem; /* Slightly smaller font for table cells */
+            }
+            img.product-img {
+                max-width: 60px;
+            }
+            .btn-cancel, .btn-view, button.back-btn { /* Apply to both buttons */
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            /* Responsive table - allow horizontal scroll */
+            .table-responsive { /* Add a new wrapper div */
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap; /* Prevent content from wrapping inside cells */
+            }
+
+            table { /* Adjust table itself to take full width of its new wrapper */
+                width: 100%;
+                min-width: 700px; /* Set a minimum width for the table to ensure horizontal scroll */
+                display: table; /* Revert to table display for proper column rendering within scrollable area */
+            }
+
+            thead {
+                display: table-header-group; /* Ensure header is shown */
+            }
+
+            tbody {
+                display: table-row-group; /* Ensure body is shown */
+            }
+
+            th, td, tr {
+                display: table-cell; /* Revert to table-cell display */
+            }
+
+            /* These mobile specific td styles are now only needed for stacking the labels */
+            td {
+                position: relative;
+                text-align: left; /* Keep text aligned left for data-label */
+            }
+
+            td::before {
+                /* Remove these styles if you want a purely horizontally scrolling table without stacked labels */
+                /* If you keep them, they'll act as a label to the left of the data in horizontal scroll */
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: calc(50% - 20px); /* Adjust as needed */
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+            }
+           
+
+            /* Corrected: Apply flexbox to the action buttons container */
+            .action-buttons {
+                display: flex;
+                gap: 8px; /* Space between buttons */
+                flex-wrap: wrap; /* Allow buttons to wrap if horizontal space is very limited */
+                justify-content: flex-start; /* Align buttons to the start within the cell */
+                width: 100%; /* Ensure the container takes full width of the td */
+            }
+
+            td:last-child {
+                display: table-cell; /* Revert to table-cell so flexbox inside can work */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .order-container {
+                padding: 10px;
+            }
+            th, td {
+                font-size: 0.8rem;
+                padding: 8px 5px;
+            }
+            td::before {
+                font-size: 0.75rem;
+            }
+            img.product-img {
+                max-width: 50px;
+            }
+            .btn-cancel, .btn-view, button.back-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .action-buttons {
+                justify-content: center; /* Center buttons on very small screens */
+            }
+        }
+
+        /* Styles for View button */
+        .btn-view {
+            background-color: #28a745; /* A nice green color */
+            color: white;
+            border: none;
+            padding: 10px 18px; /* Consistent with cancel button */
+            border-radius: 8px; /* Consistent with cancel button */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 600;
+            /* No margin-left here, rely on gap in .action-buttons */
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-view:hover {
+            background-color: #218838; /* Darker green on hover */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(40, 167, 69, 0.3);
+        }
+
+
+
+
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    {% load static %}
+    <nav>
+    <div class="logo-section">
+        <img src="{% static 'images/agro-removebg-preview.png' %}" alt="AGRO-FARM Logo" class="main-logo-image">
+        <div class="logo">AGRO-FARM</div>
+    </div>
+
+    <div class="nav-search-country">
+        <div class="search-input-container">
+            <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
+            <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+
+        <select class="indian" aria-label="Select country">
+            <option value="india">India</option>
+            <option value="sri_lanka">Sri Lanka</option>
+            <option value="canada">Canada</option>
+            <option value="australia">Australia</option>
+        </select>
+    </div>
+
+    <ul class="nav-links-section">
+        <li><a href="{% url 'home' %}">
+            <img src="{% static 'images/download-removebg-preview (1).png' %}" > {# Placeholder image, replace with your actual home icon #}
+            <span>Home</span>
+        </a></li>
+        <li>
+            {% if profile_name %}
+                <a href="{% url 'profile' %}">
+                    <img src="{% static 'images/p3-removebg-preview.png' %}" > {# Placeholder image #}
+                    <span>{{ profile_name }}</span>
+                </a>
+            {% else %}
+                <a href="{% url 'second' %}">
+                    <img src="{% static 'images/user-removebg-preview.png' %}"> {# Placeholder image #}
+                    <span>Signin/Signup</span>
+                </a>
+            {% endif %}
+        </li>
+        <li><a href="{% url 'carts' %}" >
+            <img src="{% static 'images/new_cart-removebg-preview.png' %}"> {# Placeholder image #}
+            <span>Carts</span>
+        </a></li>
+        <li><a href="{% url 'order' %}" class="active">
+            <img src="{% static 'images/images-removebg-preview (3).png' %}"> {# Placeholder image #}
+            <span>Order</span>
+        </a></li>
+        <li><a href="{% url 'profile' %}">
+            <img src="{% static 'images/save-removebg-preview.png' %}" > {# Placeholder image #}
+            <span>Logout</span>
+        </a></li>
+    </ul>
+</nav>
+
+    <div class="order-container" role="main" aria-label="Order Summary">
+        <h1>Your Orders</h1>
+        <div class="table-responsive"> {# Added wrapper div for horizontal scroll #}
+            <table aria-live="polite" aria-relevant="all" aria-label="List of your orders">
+                <thead>
+                    <tr >
+                        <th>Order ID</th>
+                        <th>User_ID</th>
+                        <th>Username</th>
+                        <th>Product Name</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                        <th>Payment Mode</th>
+                        <th>Order Date</th>
+                        <th>Received Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-tbody">
+                    {% for item in order_items %}
+                    <tr data-order-id="{{ item.order_id }}">
+                        <td data-label="Order ID">{{ item.order_id }}</td>
+                        <td data-label="User ID">{{ item.userid }}</td>
+                        <td data-label="Username">{{ item.user_name }}</td>
+                        <td data-label="Product Name">{{ item.product_name }}</td>
+                        <td data-label="Quantity">{{ item.quantity }}</td>
+                        <td data-label="Price" class="price">${{ item.price_per_item|floatformat:2 }}</td>
+                        <td data-label="Payment Mode">cash on delivery</td>
+                        <td data-label="Order Date">5/2/2005</td>
+                        <td data-label="Received Date">
+                            5/2/2005
+                        </td>
+                        <td data-label="Total Amount" class="price">${{ item.total_amount|floatformat:2 }}</td>
+                        <td data-label="Status"><span class="status status-delivered">{{status}}</span></td>
+                        <td data-label="Action">
+                            <div class="action-buttons"> 
+                                
+                                {% if status == 'Pending...' or status == 'Processing' %}
+                                <form action="{% url 'cancelled_item_order' %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item.order_id" value="{{ item.order_id }}">
+                                    <button type="submit" class="btn-cancel">Cancel</button>
+                                </form>
+                                {% endif %}
+
+                                <button type="button" class="btn-view" onclick="viewOrderDetails('{{status}}','{{item.order_id}}','{{item.user_name}}','{{item.product_name}}','{{item.quantity}}','{{item.price_per_item|floatformat:2}}','{{ item.total_amount|floatformat:2 }}')">View....</button>
+                                    </div>
+                                <!-- <button type="button" class="btn-view" onclick="window.open('charts')">View</button> -->
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> {# End of table-responsive wrapper #}
+
+        {# The empty-message div is handled dynamically by JS now, so its initial display state can be controlled by JS #}
+        <div class="empty-message" style="display: none;">
+            <i class="fa-solid fa-box-open"></i>
+            <span>No orders placed yet.</span>
+        </div>
+        <button class="back-btn" onclick="window.location.href='carts.html?'">Back to Cart</button>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        function showToast(message, isError = false) {
+            const toastElement = document.getElementById('toast');
+            toastElement.textContent = message;
+            if (isError) {
+                toastElement.style.backgroundColor = '#dc3545'; // Red for error
+            } else {
+                toastElement.style.backgroundColor = '#4CAF50'; // Green for success
+            }
+            toastElement.classList.add('show');
+            setTimeout(() => {
+                toastElement.classList.remove('show');
+            }, 3000); // Display for 3 seconds
+        }
+
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Helper function to get CSRF token from cookies (for Django)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        async function cancelOrder(orderId) {
+            if (confirm(`Are you sure you want to cancel order ${orderId}?`)) {
+                try {
+                    const response = await fetch(`/cancel_order/${orderId}/`, { // Assuming a Django URL for cancellation
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            const rowToUpdate = document.querySelector(`tr[data-order-id="${orderId}"] .status`);
+                            if (rowToUpdate) {
+                                rowToUpdate.textContent = 'Cancelled';
+                                rowToUpdate.classList.remove('status-pending', 'status-processing', 'status-shipped', 'status-delivered');
+                                rowToUpdate.classList.add('status-cancelled');
+                                const cancelButtonForm = document.querySelector(`tr[data-order-id="${orderId}"] form`);
+                                if (cancelButtonForm) {
+                                    cancelButtonForm.remove(); // Remove the form containing the cancel button
+                                }
+                            }
+                            showToast(`Order ${orderId} has been canceled successfully.`);
+                            checkEmptyTable(); // Re-check table emptiness after cancellation
+                        } else {
+                            showToast(data.message || `Failed to cancel order ${orderId}.`, true);
+                        }
+                    } else {
+                        const errorData = await response.json();
+                        showToast(errorData.message || 'Error cancelling order. Please try again.', true);
+                    }
+                } catch (error) {
+                    console.error('Error cancelling order:', error);
+                    showToast('An error occurred while canceling the order.', true);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const orderSuccess = getQueryParam('orderSuccess');
+            if (orderSuccess === 'true') {
+                showToast('Order placed successfully!');
+            }
+
+            // Attach event listeners to all cancel buttons
+            // Event delegation is better for dynamically added elements
+            document.getElementById('orders-tbody').addEventListener('click', function(event) {
+                if (event.target.classList.contains('btn-cancel')) {
+                    const orderId = event.target.closest('tr').dataset.orderId;
+                    cancelOrder(orderId);
+                }
+            });
+
+            function checkEmptyTable() {
+                const tbody = document.getElementById('orders-tbody');
+                const emptyMessageDiv = document.querySelector('.order-container > .empty-message');
+                const emptyMessageRow = tbody.querySelector('.empty-message-row');
+
+                const actualRows = Array.from(tbody.children).filter(row => !row.classList.contains('empty-message-row'));
+
+                if (actualRows.length === 0) {
+                    if (!emptyMessageRow) {
+                        const newEmptyRow = document.createElement('tr');
+                        newEmptyRow.innerHTML = `<td colspan="12" class="empty-message-cell"><i class="fa-solid fa-box-open"></i><span>No orders placed yet.</span></td>`;
+                        newEmptyRow.classList.add('empty-message-row');
+                        tbody.appendChild(newEmptyRow);
+                    } else {
+                        emptyMessageRow.style.display = 'table-row';
+                    }
+                } else {
+                    if (emptyMessageRow) {
+                        emptyMessageRow.remove();
+                    }
+                }
+                emptyMessageDiv.style.display = 'none';
+            }
+            checkEmptyTable(); // Initial check on page load
+        });
+        
+        //  charts logic 
+        function viewOrderDetails(status,orderid,username,productname,quantity,price,total_amount) {
+            const orderData = {
+                orderId: orderid,
+                orderDate: "2/5/2005",
+                total: total_amount,
+                payment: "COD",
+                shippingAddress: "Sedrana,Siddhpur",
+                status: status, // Status to highlight on the tracking page
+                products: [
+                           { name: productname, qty: quantity, price: price , img: "{% static 'images/agro-removebg-preview.png' %}" },
+                          ]
+            };
+
+            // Encode the orderData object into a JSON string and then encode it for URL
+            const encodedOrderData = encodeURIComponent(JSON.stringify(orderData));
+            window.open(`charts?orderData=${encodedOrderData}`, '_blank');
+        }
+    </script>
+</body>
+</html>

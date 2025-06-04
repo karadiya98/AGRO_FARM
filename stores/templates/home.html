@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Items Card View with Navigation and Ad</title>
+    <style>
+        /* Reset and base */
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        *, *::before, *::after {
+            box-sizing: inherit;
+        }
+
+        /* Navigation Bar */
+        /* Navigation Bar */
+nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 70px; /* Slightly taller for more presence */
+            background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
+            border-radius: 0; /* Full width, no rounded corners for a sleek look */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Distribute logo, search, and nav links */
+            padding: 0 30px; /* More padding */
+            z-index: 10000;
+        }
+
+        /* AGRO-FARM Logo and Text */
+        nav .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px; /* Slightly more space */
+        }
+
+        nav .main-logo-image {
+            height: 45px; /* Larger logo */
+            width: auto;
+            border-radius: 50%;
+            object-fit: contain;
+            box-shadow: 0 0 8px rgba(0,0,0,0.2); /* Subtle shadow for logo */
+        }
+
+        nav .logo {
+            font-size: 1.8em; /* Larger font size */
+            font-weight: 800; /* Bolder */
+            letter-spacing: 2.5px; /* More prominent spacing */
+            color: #ffffff; /* Pure white for contrast */
+            cursor: pointer;
+            font-style: italic;
+            user-select: none;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Enhanced text shadow */
+        }
+
+        /* Search and country container */
+        .nav-search-country {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* More space */
+            flex: 1; /* Allows it to grow and take available space between logo and nav links */
+            max-width: 700px; /* Wider search area */
+            margin: 0 30px; /* More margin */
+        }
+
+        /* Search input container */
+        .nav-search-country .search-input-container {
+            position: relative; /* Essential for absolute positioning of icon */
+            flex: 1;
+        }
+
+        /* Search input */
+        .search-input {
+            width: 100%;
+            padding: 10px 45px 10px 20px; /* More padding, crucial for icon space */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            font-size: 1.05em; /* Slightly larger font */
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #2e8b57; /* More vibrant focus shadow */
+            background-color: #f7fff7; /* Very light green on focus */
+        }
+        /* Search icon inside input */
+        .search-icon {
+            position: absolute;
+            right: 15px; /* Position from the right edge of its parent (search-input-container) */
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2e8b57; /* Darker green icon */
+            font-size: 1.3em; /* Larger icon */
+            pointer-events: none; /* Allows clicks to pass through to the input */
+            transition: color 0.3s ease; /* Smooth color transition */
+        }
+        .search-input:focus + .search-icon {
+            color: #1B7A43; /* Change icon color on input focus */
+        }
+
+        /* Search select */
+        .nav-search-country select.select,
+        .nav-search-country select.indian {
+            margin-right: 80px;
+            padding: 10px 15px; /* More padding */
+            border-radius: 25px; /* More rounded */
+            border: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
+            background-color: #ffffff;
+            font-weight: 700; /* Bolder text */
+            color: #2e8b57; /* Darker green */
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, #2e8b57 50%),
+                linear-gradient(135deg, #2e8b57 50%, transparent 50%);
+            background-position:
+                calc(100% - 25px) calc(1em + 2px),
+                calc(100% - 18px) calc(1em + 2px);
+            background-size: 7px 7px; /* Larger arrow */
+            background-repeat: no-repeat;
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+        .nav-search-country select.select:hover,
+        .nav-search-country select.indian:hover {
+            box-shadow: 0 6px 15px rgba(46, 139, 87, 0.7); /* More prominent hover shadow */
+            background-color: #e6ffe6; /* Light green on hover */
+        }
+
+        /* Navigation Links (Home, Signin/Signup, Carts, Order, Logout) */
+        nav .nav-links-section {
+            display: flex;
+            list-style: none;
+            font-size: small;
+            margin: 0; /* Remove default margin */
+            padding: 0;
+            gap: 5px; /* Reduced gap between links */
+            /* Crucial for aligning to the right */
+            justify-content: flex-end; /* Aligns all items to the end (right) */
+            align-items: center; /* Vertically align items */
+            margin-top: 15px;
+            flex-shrink: 0; /* Prevent it from shrinking */
+        }
+
+        nav .nav-links-section li a {
+            color: black; /* Lighter grey for subtle default */
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 10px; /* Adjusted padding */
+            border-radius: 8px; /* Slightly more rounded */
+            transition: background-color 0.4s ease, color 0.4s ease, transform 0.2s ease; /* Added transform */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+
+        nav .nav-links-section li a img {
+            height: 15px; /* Smaller icons */
+            width: 15px; /* Smaller icons */
+            margin-bottom: 2px; /* Less space below icon */
+            filter: brightness(0) invert(1); /* White icons by default */
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+
+        nav .nav-links-section li a span {
+            font-size: 0.75em; /* Smaller text */
+            font-weight: 700; /* Bolder text */
+            white-space: nowrap;
+            color: black; /* Slightly greenish white */
+            transition: color 0.3s ease;
+        }
+
+        nav .nav-links-section li a:hover {
+            background-color: #8bc34a; /* Lighter green on hover */
+            color: #ffffff; /* White text on hover */
+            font-weight: 800;
+            transform: translateY(-3px); /* Subtle lift effect */
+            box-shadow: 0 12px 28px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+        }
+
+        nav .nav-links-section li a:hover img {
+            transform: scale(1.15); /* More pronounced icon scale */
+            filter: brightness(1) invert(0); /* Original color icons on hover */
+        }
+
+        nav .nav-links-section li a:hover span {
+            color: #1B7A43; /* Darker green for text on hover */
+        }
+
+        /* --- ACTIVE NAVIGATION LINK STYLES (MODIFIED) --- */
+        nav .nav-links-section li a.active {
+            border-bottom: 4px solid #ffffff; /* Thicker white underline */
+            padding-bottom: 6px; /* More space below underline */
+            background-color: #388e3c; /* Darker green for active state */
+            color: #ffffff; /* White text for active state */
+            font-weight: 900; /* Even bolder */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Stronger shadow for active */
+        }
+
+        nav .nav-links-section li a.active span {
+            color: #ffffff; /* White text for active state */
+        }
+
+        nav .nav-links-section li a.active img {
+            filter: brightness(1) invert(0); /* Original color for active icons */
+        }
+
+        /* Ad banner styles */
+        .ad-banner {
+            width: 100vw;
+            height: 330px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            margin-top: 65px; /* below nav */
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.35);
+        }
+        .ad-slide-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .ad-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.7) 70%);
+            border-radius: 0;
+            user-select: none;
+        }
+        .ad-slide.active {
+            opacity: 1;
+            position: relative;
+        }
+        .ad-slide img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            filter: brightness(0.75);
+            transition: transform 0.7s ease;
+        }
+        .ad-slide.active img {
+            transform: scale(1.05);
+        }
+        .ad-slide h3 {
+            position: relative;
+            z-index: 1;
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #d4f6d4;
+            text-shadow:
+                0 0 8px rgba(27, 122, 67, 0.8),
+                0 1px 20px rgba(0,0,0,0.7);
+            margin: 0;
+            max-width: 90%;
+            line-height: 1.1;
+        }
+
+        /* Categories container styles below banner with full width */
+        .categories-container {
+            width: 100vw;
+            margin-top: 5px;
+            background: #679c67;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            padding: 12px 15px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            white-space: nowrap;
+        }
+        /* Scrollbar styling */
+        .categories-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .categories-container::-webkit-scrollbar-track {
+            background: #f0f4f8;
+            border-radius: 3px;
+        }
+        .categories-container::-webkit-scrollbar-thumb {
+            background: #abb63b;
+            border-radius: 3px;
+        }
+        .categories-container {
+            scrollbar-width: thin;
+            scrollbar-color: #abb63b #f0f4f8;
+        }
+        /* Individual category item styles */
+        .category-item {
+            display: inline-block;
+            background-color: #e2e6d9;
+            padding: 8px 15px;
+            border-radius: 16px;
+            font-weight: 600;
+            color: #1B7A43;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 0.9em;
+            margin-right: 10px;
+        }
+        .category-item:hover {
+            background-color: #abb63b;
+            color: white;
+        }
+        .category-item.active {
+            background-color: #1B7A43;
+            color: white;
+            box-shadow: 0 2px 8px rgba(27, 122, 67, 0.7);
+        }
+
+        /* Main container styles (cards container only now) */
+        .main-container {
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            padding: 0 15px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 10px;
+        }
+
+        /* Container grid (cards) */
+        .container {
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Card styles */
+        .card {
+            background: rgb(244, 241, 241);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin: 5px;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .card:hover {
+            background-color: #f9faf8;
+            border-color: black;
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .card img {
+            width: 100%;
+            height: 200px;
+            margin: 10px;
+            object-fit: cover;
+            align-items: center;
+            border-bottom: 2px solid #004aad;
+            border-radius: 8px;
+        }
+        .card-content {
+            padding: 15px 20px 20px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+        }
+        .card-content h3 {
+            margin: 0 0 10px;
+            font-size: 1.25em;
+            align-items: center;
+            color: #004aad;
+            text-align: center;
+        }
+        .card-content p {
+            margin: 6px 0;
+            color: #555;
+            align-items: center;
+            font-size: 0.95em;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .card-content .price {
+            font-weight: 700;
+            color: #ff6f00;
+            align-items: center;
+            font-size: 1.15em;
+            margin-top: 10px;
+        }
+        .card-content .category {
+            margin-top: 6px;
+            font-style: italic;
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        .button-row {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px; /* space between buttons */
+        }
+        .add-to-cart, .order {
+            flex: 1; /* buttons take equal width */
+            padding: 10px 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        .add-to-cart {
+            width: 150px;
+            background-color: #abb63b;
+            color: rgb(241, 234, 234);
+        }
+        .add-to-cart:hover {
+            width: 170px;
+            background-color: #869724;
+            color: white
+        }
+        .order {
+            width: 150px;
+            margin-top: 5px;
+            background-color: #1b7a43;
+            color: rgb(241, 234, 234);
+        }
+        .order:hover {
+            width: 170px;
+            background-color: #14532d;
+            color: white
+        }
+
+        /* About Us Section full width */
+        .about-us {
+            background-image: linear-gradient(135deg, #1B7A43 0%, #3ba14a 100%);
+            color: white;
+            width: 100vw;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 60px 20px;
+            text-align: center;
+            font-size: 1.15em;
+            font-weight: 500;
+            user-select: none;
+            box-shadow: inset 0 0 80px rgb(255 255 255 / 0.15);
+        }
+        .about-us h3 {
+            font-size: 2.2em;
+            margin-bottom: 18px;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 8px rgba(0,0,0,0.5);
+        }
+        .about-us p {
+            max-width: 800px;
+            margin: 0 auto 15px;
+            line-height: 1.5;
+            text-shadow: 0 0 5px rgba(0,0,0,0.25);
+        }
+        .page-title {
+            text-align: center;
+            margin: 20px 0;
+            color: rgb(68, 65, 65);
+            margin-left: 250px;
+            margin-right: 250px;
+            background-color: #d1e3d9;
+            padding: 5px;
+            border-top-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            font-style: italic;
+            font-size: large;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 700;
+        }
+
+        /* Toast Message Styles */
+        /* Toast Message Styles for Warning */
+.toast-message {
+    visibility: hidden;
+    min-width: 280px; /* Slightly wider */
+    margin-left: -140px; /* Adjust for width */
+    background-color: #9b4040; /* Bright gold/yellow for strong warning */
+    color: #ffffff; /* Dark grey for good contrast */
+    text-align: center;
+    border-radius: 10px; /* More rounded */
+    padding: 15px 25px; /* Generous padding */
+    position: fixed;
+    z-index: 10001;
+    left: 50%;
+    bottom: 30px;
+    font-size: 17px; /* Larger font */
+    font-weight: 700; /* Extra bold text */
+    opacity: 0;
+    transform: translateY(10px); /* Start slightly lower for bounce effect */
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce transition */
+    box-shadow: 0 8px 15px rgba(255, 215, 0, 0.4); /* More prominent shadow with yellow tint */
+    border: 2px solid #ff0000; /* Orange border for extra emphasis */
+}
+
+.toast-message.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0); /* Move to final position */
+}
+
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            nav {
+                padding: 0 12px;
+                height: 60px;
+            }
+            nav .logo {
+                font-size: 1.3em;
+            }
+            nav ul {
+                gap: 12px;
+                font-size: 0.9em;
+            }
+            .nav-search-country {
+                max-width: 300px;
+                gap: 10px;
+            }
+            .nav-search-country select.select,
+            .nav-search-country select.indian {
+                padding: 6px 10px;
+                font-size: 0.9em;
+            }
+            .search-input {
+                padding: 15px 38px 7px 12px;
+                font-size: 0.95em;
+            }
+            
+
+            .ad-banner {
+                height: 220px;
+            }
+            .ad-slide h3 {
+                font-size: 1.5em;
+                padding: 0 10px;
+            }
+            .categories-container {
+                padding-left: 8px;
+            }
+            .category-item {
+                padding: 7px 12px;
+                font-size: 0.85em;
+            }
+            .container {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            .card img {
+                height: 150px;
+                margin: 8px;
+            }
+            .card-content h3 {
+                font-size: 1.1em;
+            }
+            .about-us {
+                font-size: 1em;
+                padding: 40px 12px;
+            }
+            .about-us h3 {
+                font-size: 1.6em;
+                margin-bottom: 14px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+       {% load static %}
+    <nav>
+    <div class="logo-section">
+        <img src="{% static 'images/agro-removebg-preview.png' %}" alt="AGRO-FARM Logo" class="main-logo-image">
+        <div class="logo">AGRO-FARM</div>
+    </div>
+
+    <div class="nav-search-country">
+        <div class="search-input-container">
+            <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
+            <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+
+        <select class="indian" aria-label="Select country">
+            <option value="india">India</option>
+            <option value="sri_lanka">Sri Lanka</option>
+            <option value="canada">Canada</option>
+            <option value="australia">Australia</option>
+        </select>
+    </div>
+
+    <ul class="nav-links-section">
+        <li><a href="{% url 'home' %}" class="active">
+            <img src="{% static 'images/download-removebg-preview (1).png' %}" > {# Placeholder image, replace with your actual home icon #}
+            <span>Home</span>
+        </a></li>
+        <li id="profile-link-container">
+            {% if profile_name %}
+                <a href="{% url 'profile' %}" data-signed-in="true">
+                    <img src="{% static 'images/p3-removebg-preview.png' %}" > {# Placeholder image #}
+                    <span>{{ profile_name }}</span>
+                </a>
+            {% else %}
+                <a href="{% url 'second' %}" data-signed-in="true">
+                    <img src="{% static 'images/user-removebg-preview.png' %}"> {# Placeholder image #}
+                    <span>Signin/Signup</span>
+                </a>
+            {% endif %}
+
+
+        </li>
+        <li><a href="{% url 'carts' %}" >
+            <img src="{% static 'images/new_cart-removebg-preview.png' %}"> {# Placeholder image #}
+            <span>Carts</span>
+        </a></li>
+        <li><a href="{% url 'order' %}" >
+            <img src="{% static 'images/images-removebg-preview (3).png' %}"> {# Placeholder image #}
+            <span>Order</span>
+        </a></li>
+        <li><a href="{% url 'profile' %}">
+            <img src="{% static 'images/save-removebg-preview.png' %}" > {# Placeholder image #}
+            <span>Logout</span>
+        </a></li>
+    </ul>
+</nav>
+
+    <div class="ad-banner" role="banner" aria-label="Advertisement banner">
+        <div class="ad-slide-container">
+            {% for ad in adds %}
+            <div class="ad-slide {% if forloop.first %}active{% endif %}">
+                <img src="{{ ad.advertisement.url }}" alt="Advertisement Image" />
+                <h3>{{ ad.brief }}</h3>
+            </div>
+            {% empty %}
+            <p>No advertisements available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="categories-container" id="categoryList" role="navigation" aria-label="Category selection">
+    <div class="category-item {% if not request.GET.category %}active{% endif %}">
+        <a href="{% url 'home' %}" style="text-decoration: none; color: inherit;">
+            ALL Products
+        </a>
+    </div>
+    {% for i in category %}
+        <div class="category-item {% if request.GET.category == i.id|stringformat:"s" %}active{% endif %}">
+            <a href="{% url 'home' %}?category={{ i.id }}" style="text-decoration: none; color: inherit;">
+                {{ i.name }}
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+
+    <h1 class="page-title">"Harvesting Tomorrow, One Seed at a Time!"</h1>
+
+
+    <div class="main-container" role="main">
+    <div class="container">
+        {% for item in items %}
+            <div class="card" onclick="window.location.href='Detail_product.html?name={{ item.name }}&description={{ item.description }}&price={{ item.price }}&image={{ item.image.url }}'">
+                <img src="{{ item.image.url }}" alt="{{ item.name }}" />
+                <div class="card-content">
+                    <h3>{{ item.name }}</h3>
+                    <p>{{ item.description }}</p>
+                    <p class="price">${{ item.price }}</p>
+                    <button class="add-to-cart" aria-label="Add {{item.name}} to cart"
+                            onclick="event.stopPropagation(); addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image.url }}')">
+                        Add to Cart
+                    </button>
+                  <button class="order" aria-label="Order {{item.name}}"
+            onclick="event.stopPropagation(); addtoorder('{{ item.name }}','{{ item.price }}','{{ item.image.url }}')">
+        Order
+    </button>
+
+</div>
+            </div>
+        {% empty %}
+            <p>No items available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+    <div id="toast" class="toast-message"></div>
+
+    <section class="about-us" aria-labelledby="about-us-title">
+        <h3 id="about-us-title">About Us</h3>
+        <p>Welcome to AGRO-FARM, your trusted partner for quality agricultural products. We are committed to providing fresh items directly from farm to your home with utmost care and reliability.</p>
+        <p>Our mission is to empower farmers and promote sustainable agriculture while offering customers the best products with excellent service. Thank you for choosing AGRO-FARM!</p>
+    </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Advertisement slide logic
+        const slides = document.querySelectorAll('.ad-slide');
+        let current = 0;
+        const slideCount = slides.length;
+        const intervalTime = 5000; // 5 seconds
+
+        if (slideCount > 1) {
+            setInterval(() => {
+                slides[current].classList.remove('active');
+                current = (current + 1) % slideCount;
+                slides[current].classList.add('active');
+            }, intervalTime);
+        }
+
+        // Category selection logic
+        const categoryList = document.getElementById('categoryList');
+        const categoryItems = categoryList.querySelectorAll('.category-item');
+
+        categoryItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // Remove 'active' class from all
+                categoryItems.forEach(i => i.classList.remove('active'));
+                // Add 'active' class to clicked item
+                item.classList.add('active');
+                // Allow normal link navigation, no JS filtering added currently
+            });
+        });
+    });
+
+    // Function to show a toast message
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        toast.textContent = message;
+        toast.classList.add("show");
+        setTimeout(function(){
+            toast.classList.remove("show");
+        }, 1500); // Hide after 3 seconds
+    }
+
+    function addToCart(name, price, image) {
+        const profileLink = document.querySelector('#profile-link-container a');
+        const isSignedIn = profileLink && profileLink.dataset.signedIn === 'true';
+
+        if (!isSignedIn) {
+            showToast(" !! Please sign in to add items to your cart. !!");
+            return; // Stop execution if not signed in
+        }
+
+        const url = `/cartinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&image=${encodeURIComponent(image)}`; // ENSURE THIS URL IS CORRECT
+
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = 'carts.html'; // Redirect to the cart page after successful addition
+                } else {
+                    console.error('Failed to add item to cart');
+                     showToast(" !! Please sign in to add items to your cart. !!");
+                }
+            })
+            .catch(error => {
+                console.error('There was an error:', error);
+                showToast("An error occurred. Please try again.");
+            });
+    }
+
+
+   
+
+    function addtoorder(name, price,image) {
+        const profileLink = document.querySelector('#profile-link-container a');
+        const isSignedIn = profileLink && profileLink.dataset.signedIn === 'true';
+
+        if (!isSignedIn) {
+            showToast(" !! Please sign in to place an order. !!");
+            return; // Stop execution if not signed in
+        }
+
+        // Construct the URL with price and quantity
+        const url = `/orderinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}`;
+
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = `payment.html?amount=${encodeURIComponent(price)}&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}` // Redirect to the order page after successful addition
+                } else {
+                    console.error('Failed to add item to order');
+                    showToast(" !! Please sign in to place an order. !!");
+                }
+            })
+            .catch(error => {
+                console.error('There was an error:', error);
+                showToast("An error occurred. Please try again.");
+            });
+    }
+
+</script>
+
+</body>
+</html>
