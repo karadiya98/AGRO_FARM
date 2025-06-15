@@ -66,11 +66,11 @@
 
 
 
-12] This is &lt;strong>add product&lt;/strong> page where dynamically add product which shows in user website
+12] This is <strong>add product</strong> page where dynamically add product which shows in user website
+<div >
+  <img src="AGRO IMAGES/11.png" width="100%">
+</div>
 
-&lt;div >
-&lt;img src="AGRO IMAGES/1.png" width="100%">
-&lt;/div>
 
 
 
