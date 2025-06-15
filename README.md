@@ -46,44 +46,35 @@
 </div>
 
 
-1] This is first page  
+9] This is LOGOUT page  
 <div >
-  <img src="AGRO IMAGES/1.png" width="100%">
+  <img src="AGRO IMAGES/9.png" width="100%">
 </div>
 
 
-1] This is first page  
+10] This is ADMIN PANEL page if clicked on admin instead of user 
 <div >
-  <img src="AGRO IMAGES/1.png" width="100%">
-</div>
-
-
-
-1] This is first page  
-<div >
-  <img src="AGRO IMAGES/1.png" width="100%">
+  <img src="AGRO IMAGES/10.png" width="100%">
 </div>
 
 
 
-1] This is first page  
+11] This is home page of admin
 <div >
-  <img src="AGRO IMAGES/1.png" width="100%">
+  <img src="AGRO IMAGES/11.1.png" width="100%">
 </div>
 
 
 
-1] This is first page  
-<div >
-  <img src="AGRO IMAGES/1.png" width="100%">
-</div>
+12] This is &lt;strong>add product&lt;/strong> page where dynamically add product which shows in user website
+
+&lt;div >
+&lt;img src="AGRO IMAGES/1.png" width="100%">
+&lt;/div>
 
 
 
-1] This is first page  
-<div >
-  <img src="AGRO IMAGES/1.png" width="100%">
-</div>
+
 
 
 
