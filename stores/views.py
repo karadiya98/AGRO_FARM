@@ -12,37 +12,158 @@ from .models.carts import CartItem
 from .models.Main_TABLE import Main_table
 from django.contrib.auth.hashers import make_password
 from django.contrib import messages
+from django.conf import settings 
+
+
+import random
+from django.core.mail import send_mail
+
+# for date
+from datetime import date
+
+
+
+
+
 
 def bill(request):
     return render(request, 'Bill.html')
-
 
 def payment(request):
      return render(request, 'payment.html')
 
 def chart(request):
-     return render(request, 'charts.html')
+     username = request.session.get('profile_name')
+
+    #  user_detail = User_Detail.objects.get(user_name=username)
+    #  user_id_to_filter = user_detail.user_id
+
+    #  ordertable = Main_table.objects.get(userid=user_id_to_filter)
+    #  order_date = ordertable.hello
+
+     context = {
+        'username': username,
+        # 'order_date':order_date
+    }
+     return render(request, 'charts.html',context)
+
+# def datainserted(request):
+#     profile_name = ''
+#     if request.method == 'POST':
+#         name = request.POST.get('username')
+#         email = request.POST.get('email')
+#         password = request.POST.get('password')
+#         confirm_password = request.POST.get('confirm_password')
+#         if name == None or email == None or password == None or confirm_password == None:
+#             return render(request, 'accountuser.html' ,{'No_parameters':"Pls filled all parameters"})
+#         # checking for user exists or not
+#         else :
+#              for user in User_Detail.objects.all():
+#                  if name==user.user_name:
+#                      return render(request, 'accountuser.html' ,{'userexists':"username is already exists !"}) 
+        
+#         if password == confirm_password:
+#             temp_variable = User_Detail(user_name=name, gmail=email, password=password, confirm_password=confirm_password)
+#             temp_variable.save()
+#             otp_code = random.randint(1000, 9999)
+#             # Store the profile_name in the session
+#             request.session['otp'] = otp_code
+#             request.session['profile_name'] = name
+#             request.session['email_for_otp'] = email
+        
+
+#             send_mail(
+#                 'OTP from Agro Farm company.ltd required for Authentication',
+#                 f'Hi {name} just make sure this is your correct and activate mail if yout get otp then pls enter in agro registration process for further proceed,\n\nYour one time password (OTP) is: {otp_code}\n\nThank you for Visiting!',
+#                 'yourgmail@gmail.com',
+#                 [email],
+#                 fail_silently=False,
+#             )
+#             try:
+                
+#                 return render(request, 'otpenter.html') 
+#             except Exception as e:
+               
+#                 return render(request, 'acccountuser.html')           
+#         else:
+#             messages.error(request, "Passwords do not match.")
+#             return render(request, 'acccountuser.html.html') # Or wherever your signup form is
+        
+#     return render(request, 'carts.html', {'name': request.session.get('profile_name', '')})
+
+
+
 
 def datainserted(request):
-    profile_name = ''
     if request.method == 'POST':
         name = request.POST.get('username')
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
 
-        if password == confirm_password:
-            temp_variable = User_Detail(user_name=name, gmail=email, password=password, confirm_password=confirm_password)
-            temp_variable.save()
-            # Store the profile_name in the session
+        # 1. Check if all required fields are filled
+        if not all([name, email, password, confirm_password]):
+            messages.error(request, "Please fill all required parameters.")
+            return render(request, 'acccountuser.html')
+
+        # 2. Check if a user with the same name already exists
+        if User_Detail.objects.filter(user_name=name).exists():
+            messages.error(request, "Username is already in use!")
+            return render(request, 'acccountuser.html',{'key':"Username is already in use!"})
+
+        # 3. Check if passwords match
+        if password != confirm_password:
+            messages.error(request, "Make sure password is correct.")
+            return render(request, 'acccountuser.html')
+
+        # 4. If all checks pass, create and save the new user
+        try:
+            new_user = User_Detail(
+                user_name=name,
+                gmail=email,
+                password=password,
+                confirm_password=confirm_password
+            )
+            new_user.save()
+
+            # 5. Generate and send an OTP for verification
+            otp_code = random.randint(1000, 9999)
+            request.session['otp'] = otp_code
             request.session['profile_name'] = name
-            messages.success(request, 'created account successfully ')
-            return render(request, 'carts.html', {'name': name})
-        else:
-            messages.error(request, "Passwords do not match.")
-            return render(request, 'acccountuser.html.html') # Or wherever your signup form is
+            request.session['email_for_otp'] = email
+
+            send_mail(
+                'OTP from Agro Farm company.ltd required for Authentication',
+                f'Hi {name},\n\n Your one-time password (OTP) is: {otp_code}\n\nThank you for registering with Agro Farm!',
+                'yourgmail@gmail.com',  # Sender's email
+                [email],  # Recipient's email
+                fail_silently=False,
+            )
+            return render(request, 'otpenter.html')
+
+        except Exception as e:
+            
+            messages.error(request, "An error occurred during registration. Please try again.")
+            if 'new_user' in locals():
+                new_user.delete() 
+            return render(request, 'acccountuser.html')    
     return render(request, 'carts.html', {'name': request.session.get('profile_name', '')})
 
+
+def otp(request):
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+        session_otp = request.session.get('otp')
+        if entered_otp == str(session_otp):
+            if 'otp' in request.session:
+                del request.session['otp']
+                del request.session['email_for_otp']
+                
+            return render(request, 'carts.html',{'signup': "Welcome  to Agro farm"})
+        else:
+            
+            return render(request, 'otpenter.html',{'keyerror': "! invalid ! otp pls enter valid otp."})
+    return render(request, 'otpenter.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -57,7 +178,7 @@ def login_view(request):
                 break
 
         if authenticated:
-            messages.success(request, 'Authenticated sucessfully ')
+            messages.success(request, 'Authenticated sucessfully')
             request.session['profile_name'] = name
             return render(request,'carts.html',{'name': request.session.get('profile_name', '')})
         else:
@@ -65,12 +186,8 @@ def login_view(request):
     print(authenticated)
     return render(request, 'loginuser.html')
 
-
-
-
 def first(request):
     return render(request,'first.html')
-
 
 
 def login(request):
@@ -84,8 +201,6 @@ def account(request):
 
 def detail(request):
     return render(request,'Detail_product.html')
-
-
 
 def orders(request):
     return render(request,'order.html')
@@ -254,7 +369,7 @@ def add_order_backened(request):
 
             # Calculate total_amount. This is exactly what you wanted.
             calculated_total_amount = quantity * price
-
+            today_date = date.today()
             try:
                 order_item = Main_table(
                     userid=user_id,
@@ -262,7 +377,8 @@ def add_order_backened(request):
                     product_name=item_name,
                     price_per_item=price,
                     quantity=quantity,
-                    total_amount=calculated_total_amount # Storing the calculated total
+                    total_amount=calculated_total_amount, # Storing the calculated total
+                    hello=today_date
                 )
                 order_item.save()
                 print(f"Successfully added '{item_name}' (Quantity: {quantity}, Price: {price}) to order with total amount: {calculated_total_amount}.")
@@ -293,13 +409,14 @@ def orders(request):
             user_detail = User_Detail.objects.get(user_name=profile_name)
             print(f"User ID from User_Detail for '{profile_name}': {user_detail.user_id}")
             user_id_to_filter = user_detail.user_id
+            
     else:
-        user_id_to_filter = 900  # Default user ID if no profile_name in session
+        user_id_to_filter = 900  
 
     order_item = Main_table.objects.filter(userid=user_id_to_filter)
     context = {'order_items': order_item, 'name': profile_name, 'user_id': user_id_to_filter, 'status': "Delivered"}
     return render(request, 'order.html', context)
-# till here 
+
 
 
 def remove_item_cart(request):

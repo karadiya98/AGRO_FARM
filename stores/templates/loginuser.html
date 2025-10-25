@@ -1,126 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sign In - Agro Farm</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      height: 100vh;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #f0efe9;
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80');
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: cover;
-      background-position: center;
-    }
-    .container {
-      background: rgba(44, 71, 37, 0.85);
-      padding: 40px 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
-      max-width: 400px;
-      width: 100%;
-      text-align: center;
-    }
-    h2 {
-      margin-bottom: 24px;
-      color: #abe2a3;
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px 15px;
-      margin: 10px 0 20px 0;
-      border: 2px solid #81a673;
-      border-radius: 10px;
-      font-size: 1rem;
-      transition: border-color 0.3s ease;
-      background-color: #2f4a20;
-      color: #f0efe9;
-    }
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="password"]:focus {
-      border-color: #a9d18e;
-      outline: none;
-      background-color: #406130;
-      color: #e6f5d0;
-    }
-    button, .btn-signup {
-      display: block;
-      width: 100%;
-      border-radius: 10px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 20px rgba(169, 209, 142, 0.9);
-      text-decoration: none;
-      text-align: center;
-      user-select: none;
-    }
-    button {
-      background: #a9d18e;
-      color: #2f4a20;
-      padding: 14px;
-      border: none;
-      margin-top: 10px;
-    }
-    button:hover {
-      background: #b8e66a;
-      box-shadow: 0 6px 22px rgba(184, 230, 106, 1);
-    }
-    .btn-signup {
-      background: transparent;
-      color: #a9d18e;
-      margin-top: 15px;
-      border: 2px solid #a9d18e;
-      line-height: 2.2;
-    }
-    .btn-signup:hover {
-      background: #a9d18e;
-      color: #2f4a20;
-      box-shadow: 0 6px 22px rgba(184, 230, 106, 1);
-    }
-    @media (max-width: 480px) {
-      .container {
-        padding: 30px 20px;
-      }
-      h2 {
-        font-size: 1.7rem;
-      }
-      button, .btn-signup {
-        font-size: 1rem;
-        padding: 12px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sign In - MediShop</title>
+    <!-- Import Poppins font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #4A90E2;
+            --dark-blue: #1C3D6D;
+            --light-bg: #f2f9ff;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border-radius: 20px;
+            --box-shadow-card: 0 20px 40px rgba(0, 0, 0, 0.08);
+            --box-shadow-button: 0 6px 20px rgba(74, 144, 226, 0.35);
+            --transition-duration: 0.4s;
+            --backdrop-filter: blur(15px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #E3F2FD, #FFFFFF);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(74,144,226,0.1), transparent 70%);
+            animation: rotateGradient 15s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes rotateGradient {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .signup-card {
+            position: relative;
+            z-index: 2;
+            background: var(--card-bg);
+            padding: 50px 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow-card);
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            backdrop-filter: var(--backdrop-filter);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            animation: floatIn 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(30px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .form-header h2 {
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .form-header p {
+            margin-bottom: 40px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-blue);
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            background-color: rgba(255,255,255,0.6);
+            color: var(--dark-blue);
+            backdrop-filter: blur(6px);
+            transition: all var(--transition-duration) ease;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
+            outline: none;
+            background-color: rgba(255,255,255,0.9);
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            cursor: pointer;
+            transition: all var(--transition-duration) ease;
+            box-shadow: var(--box-shadow-button);
+            margin-top: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.6);
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 12px rgba(74, 144, 226, 0.35);
+        }
+
+        .login-link {
+            margin-top: 30px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .login-link a {
+            color: var(--primary-blue);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all var(--transition-duration) ease;
+        }
+
+        .login-link a:hover {
+            color: var(--dark-blue);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 767px) {
+            .signup-card {
+                padding: 30px 25px;
+            }
+            .form-header h2 {
+                font-size: 1.8rem;
+            }
+            .form-group input {
+                padding: 14px 16px;
+            }
+            .submit-button {
+                font-size: 1rem;
+                padding: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container" role="main" aria-label="Login form">
-    <h2>Login</h2>
-   <form action="{% url 'login_view' %}" method="POST" autocomplete="on" novalidate>
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username or Email" required />
-    <input type="password" name="password" placeholder="Password" required />
-    <button type="submit">Login</button>
-</form>
-    <a href="acccountuser.html" class="btn-signup" role="button" aria-label="Go to Sign Up page">Sign Up</a>
-  </div>
+    <div class="signup-card" role="main" aria-label="Sign In form">
+        <div class="form-header">
+            <h2>Welcome Back</h2>
+            <p>Please Login to your account.</p>
+        </div>
+
+        <form action="{% url 'login_view' %}" method="POST" autocomplete="on" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" placeholder="e.g., john_doe" required />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required />
+            </div>
+            <button type="submit" class="submit-button">Login</button>
+        </form>
+        <p class="login-link">Don't have an account? <a href="acccountuser.html">Sign Up now</a></p>
+    </div>
 </body>
 </html>
-

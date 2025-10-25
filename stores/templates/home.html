@@ -3,824 +3,1337 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Items Card View with Navigation and Ad</title>
-    <style>
-        /* Reset and base */
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f4f8;
-            color: #333;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-        *, *::before, *::after {
-            box-sizing: inherit;
-        }
-
-        /* Navigation Bar */
-        /* Navigation Bar */
-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 70px; /* Slightly taller for more presence */
-            background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
-            border-radius: 0; /* Full width, no rounded corners for a sleek look */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
-            display: flex;
-            align-items: center;
-            justify-content: space-between; /* Distribute logo, search, and nav links */
-            padding: 0 30px; /* More padding */
-            z-index: 10000;
-        }
-
-        /* AGRO-FARM Logo and Text */
-        nav .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 12px; /* Slightly more space */
-        }
-
-        nav .main-logo-image {
-            height: 45px; /* Larger logo */
-            width: auto;
-            border-radius: 50%;
-            object-fit: contain;
-            box-shadow: 0 0 8px rgba(0,0,0,0.2); /* Subtle shadow for logo */
-        }
-
-        nav .logo {
-            font-size: 1.8em; /* Larger font size */
-            font-weight: 800; /* Bolder */
-            letter-spacing: 2.5px; /* More prominent spacing */
-            color: #ffffff; /* Pure white for contrast */
-            cursor: pointer;
-            font-style: italic;
-            user-select: none;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.5); /* Enhanced text shadow */
-        }
-
-        /* Search and country container */
-        .nav-search-country {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* More space */
-            flex: 1; /* Allows it to grow and take available space between logo and nav links */
-            max-width: 700px; /* Wider search area */
-            margin: 0 30px; /* More margin */
-        }
-
-        /* Search input container */
-        .nav-search-country .search-input-container {
-            position: relative; /* Essential for absolute positioning of icon */
-            flex: 1;
-        }
-
-        /* Search input */
-        .search-input {
-            width: 100%;
-            padding: 10px 45px 10px 20px; /* More padding, crucial for icon space */
-            border-radius: 25px; /* More rounded */
-            border: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
-            font-size: 1.05em; /* Slightly larger font */
-            transition: box-shadow 0.3s ease, background-color 0.3s ease;
-        }
-        .search-input:focus {
-            outline: none;
-            box-shadow: 0 0 10px #2e8b57; /* More vibrant focus shadow */
-            background-color: #f7fff7; /* Very light green on focus */
-        }
-        /* Search icon inside input */
-        .search-icon {
-            position: absolute;
-            right: 15px; /* Position from the right edge of its parent (search-input-container) */
-            top: 50%;
-            transform: translateY(-50%);
-            color: #2e8b57; /* Darker green icon */
-            font-size: 1.3em; /* Larger icon */
-            pointer-events: none; /* Allows clicks to pass through to the input */
-            transition: color 0.3s ease; /* Smooth color transition */
-        }
-        .search-input:focus + .search-icon {
-            color: #1B7A43; /* Change icon color on input focus */
-        }
-
-        /* Search select */
-        .nav-search-country select.select,
-        .nav-search-country select.indian {
-            margin-right: 80px;
-            padding: 10px 15px; /* More padding */
-            border-radius: 25px; /* More rounded */
-            border: none;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.18); /* Stronger shadow */
-            background-color: #ffffff;
-            font-weight: 700; /* Bolder text */
-            color: #2e8b57; /* Darker green */
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image:
-                linear-gradient(45deg, transparent 50%, #2e8b57 50%),
-                linear-gradient(135deg, #2e8b57 50%, transparent 50%);
-            background-position:
-                calc(100% - 25px) calc(1em + 2px),
-                calc(100% - 18px) calc(1em + 2px);
-            background-size: 7px 7px; /* Larger arrow */
-            background-repeat: no-repeat;
-            transition: box-shadow 0.3s ease, background-color 0.3s ease;
-        }
-        .nav-search-country select.select:hover,
-        .nav-search-country select.indian:hover {
-            box-shadow: 0 6px 15px rgba(46, 139, 87, 0.7); /* More prominent hover shadow */
-            background-color: #e6ffe6; /* Light green on hover */
-        }
-
-        /* Navigation Links (Home, Signin/Signup, Carts, Order, Logout) */
-        nav .nav-links-section {
-            display: flex;
-            list-style: none;
-            font-size: small;
-            margin: 0; /* Remove default margin */
-            padding: 0;
-            gap: 5px; /* Reduced gap between links */
-            /* Crucial for aligning to the right */
-            justify-content: flex-end; /* Aligns all items to the end (right) */
-            align-items: center; /* Vertically align items */
-            margin-top: 15px;
-            flex-shrink: 0; /* Prevent it from shrinking */
-        }
-
-        nav .nav-links-section li a {
-            color: black; /* Lighter grey for subtle default */
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 10px; /* Adjusted padding */
-            border-radius: 8px; /* Slightly more rounded */
-            transition: background-color 0.4s ease, color 0.4s ease, transform 0.2s ease; /* Added transform */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-        }
-
-        nav .nav-links-section li a img {
-            height: 15px; /* Smaller icons */
-            width: 15px; /* Smaller icons */
-            margin-bottom: 2px; /* Less space below icon */
-            filter: brightness(0) invert(1); /* White icons by default */
-            transition: transform 0.3s ease, filter 0.3s ease;
-        }
-
-        nav .nav-links-section li a span {
-            font-size: 0.75em; /* Smaller text */
-            font-weight: 700; /* Bolder text */
-            white-space: nowrap;
-            color: black; /* Slightly greenish white */
-            transition: color 0.3s ease;
-        }
-
-        nav .nav-links-section li a:hover {
-            background-color: #8bc34a; /* Lighter green on hover */
-            color: #ffffff; /* White text on hover */
-            font-weight: 800;
-            transform: translateY(-3px); /* Subtle lift effect */
-            box-shadow: 0 12px 28px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
-        }
-
-        nav .nav-links-section li a:hover img {
-            transform: scale(1.15); /* More pronounced icon scale */
-            filter: brightness(1) invert(0); /* Original color icons on hover */
-        }
-
-        nav .nav-links-section li a:hover span {
-            color: #1B7A43; /* Darker green for text on hover */
-        }
-
-        /* --- ACTIVE NAVIGATION LINK STYLES (MODIFIED) --- */
-        nav .nav-links-section li a.active {
-            border-bottom: 4px solid #ffffff; /* Thicker white underline */
-            padding-bottom: 6px; /* More space below underline */
-            background-color: #388e3c; /* Darker green for active state */
-            color: #ffffff; /* White text for active state */
-            font-weight: 900; /* Even bolder */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); /* Stronger shadow for active */
-        }
-
-        nav .nav-links-section li a.active span {
-            color: #ffffff; /* White text for active state */
-        }
-
-        nav .nav-links-section li a.active img {
-            filter: brightness(1) invert(0); /* Original color for active icons */
-        }
-
-        /* Ad banner styles */
-        .ad-banner {
-            width: 100vw;
-            height: 330px;
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            margin-top: 65px; /* below nav */
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.35);
-        }
-        .ad-slide-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-        .ad-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            padding: 0 20px;
-            background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.7) 70%);
-            border-radius: 0;
-            user-select: none;
-        }
-        .ad-slide.active {
-            opacity: 1;
-            position: relative;
-        }
-        .ad-slide img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-            filter: brightness(0.75);
-            transition: transform 0.7s ease;
-        }
-        .ad-slide.active img {
-            transform: scale(1.05);
-        }
-        .ad-slide h3 {
-            position: relative;
-            z-index: 1;
-            font-size: 2.2em;
-            font-weight: 700;
-            color: #d4f6d4;
-            text-shadow:
-                0 0 8px rgba(27, 122, 67, 0.8),
-                0 1px 20px rgba(0,0,0,0.7);
-            margin: 0;
-            max-width: 90%;
-            line-height: 1.1;
-        }
-
-        /* Categories container styles below banner with full width */
-        .categories-container {
-            width: 100vw;
-            margin-top: 5px;
-            background: #679c67;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-radius: 5px;
-            padding: 12px 15px;
-            margin-bottom: 30px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            white-space: nowrap;
-        }
-        /* Scrollbar styling */
-        .categories-container::-webkit-scrollbar {
-            height: 6px;
-        }
-        .categories-container::-webkit-scrollbar-track {
-            background: #f0f4f8;
-            border-radius: 3px;
-        }
-        .categories-container::-webkit-scrollbar-thumb {
-            background: #abb63b;
-            border-radius: 3px;
-        }
-        .categories-container {
-            scrollbar-width: thin;
-            scrollbar-color: #abb63b #f0f4f8;
-        }
-        /* Individual category item styles */
-        .category-item {
-            display: inline-block;
-            background-color: #e2e6d9;
-            padding: 8px 15px;
-            border-radius: 16px;
-            font-weight: 600;
-            color: #1B7A43;
-            cursor: pointer;
-            user-select: none;
-            white-space: nowrap;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
-            font-size: 0.9em;
-            margin-right: 10px;
-        }
-        .category-item:hover {
-            background-color: #abb63b;
-            color: white;
-        }
-        .category-item.active {
-            background-color: #1B7A43;
-            color: white;
-            box-shadow: 0 2px 8px rgba(27, 122, 67, 0.7);
-        }
-
-        /* Main container styles (cards container only now) */
-        .main-container {
-            max-width: 1000px;
-            margin: 0 auto 40px;
-            padding: 0 15px;
-            background-color: rgb(255, 255, 255);
-            border-radius: 10px;
-        }
-
-        /* Container grid (cards) */
-        .container {
-            padding: 10px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        /* Card styles */
-        .card {
-            background: rgb(244, 241, 241);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            overflow: hidden;
-            margin: 5px;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        .card:hover {
-            background-color: #f9faf8;
-            border-color: black;
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        .card img {
-            width: 100%;
-            height: 200px;
-            margin: 10px;
-            object-fit: cover;
-            align-items: center;
-            border-bottom: 2px solid #004aad;
-            border-radius: 8px;
-        }
-        .card-content {
-            padding: 15px 20px 20px;
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            position: relative;
-        }
-        .card-content h3 {
-            margin: 0 0 10px;
-            font-size: 1.25em;
-            align-items: center;
-            color: #004aad;
-            text-align: center;
-        }
-        .card-content p {
-            margin: 6px 0;
-            color: #555;
-            align-items: center;
-            font-size: 0.95em;
-            flex-grow: 1;
-            text-align: center;
-        }
-        .card-content .price {
-            font-weight: 700;
-            color: #ff6f00;
-            align-items: center;
-            font-size: 1.15em;
-            margin-top: 10px;
-        }
-        .card-content .category {
-            margin-top: 6px;
-            font-style: italic;
-            color: #777;
-            font-size: 0.9em;
-        }
-
-        .button-row {
-            margin-top: 15px;
-            display: flex;
-            gap: 10px; /* space between buttons */
-        }
-        .add-to-cart, .order {
-            flex: 1; /* buttons take equal width */
-            padding: 10px 15px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.3s ease;
-        }
-        .add-to-cart {
-            width: 150px;
-            background-color: #abb63b;
-            color: rgb(241, 234, 234);
-        }
-        .add-to-cart:hover {
-            width: 170px;
-            background-color: #869724;
-            color: white
-        }
-        .order {
-            width: 150px;
-            margin-top: 5px;
-            background-color: #1b7a43;
-            color: rgb(241, 234, 234);
-        }
-        .order:hover {
-            width: 170px;
-            background-color: #14532d;
-            color: white
-        }
-
-        /* About Us Section full width */
-        .about-us {
-            background-image: linear-gradient(135deg, #1B7A43 0%, #3ba14a 100%);
-            color: white;
-            width: 100vw;
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            padding: 60px 20px;
-            text-align: center;
-            font-size: 1.15em;
-            font-weight: 500;
-            user-select: none;
-            box-shadow: inset 0 0 80px rgb(255 255 255 / 0.15);
-        }
-        .about-us h3 {
-            font-size: 2.2em;
-            margin-bottom: 18px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-shadow: 0 0 8px rgba(0,0,0,0.5);
-        }
-        .about-us p {
-            max-width: 800px;
-            margin: 0 auto 15px;
-            line-height: 1.5;
-            text-shadow: 0 0 5px rgba(0,0,0,0.25);
-        }
-        .page-title {
-            text-align: center;
-            margin: 20px 0;
-            color: rgb(68, 65, 65);
-            margin-left: 250px;
-            margin-right: 250px;
-            background-color: #d1e3d9;
-            padding: 5px;
-            border-top-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            font-style: italic;
-            font-size: large;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            font-weight: 700;
-        }
-
-        /* Toast Message Styles */
-        /* Toast Message Styles for Warning */
-.toast-message {
-    visibility: hidden;
-    min-width: 280px; /* Slightly wider */
-    margin-left: -140px; /* Adjust for width */
-    background-color: #9b4040; /* Bright gold/yellow for strong warning */
-    color: #ffffff; /* Dark grey for good contrast */
-    text-align: center;
-    border-radius: 10px; /* More rounded */
-    padding: 15px 25px; /* Generous padding */
-    position: fixed;
-    z-index: 10001;
-    left: 50%;
-    bottom: 30px;
-    font-size: 17px; /* Larger font */
-    font-weight: 700; /* Extra bold text */
-    opacity: 0;
-    transform: translateY(10px); /* Start slightly lower for bounce effect */
-    transition: opacity 0.5s ease-out, visibility 0.5s ease-out, transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Bounce transition */
-    box-shadow: 0 8px 15px rgba(255, 215, 0, 0.4); /* More prominent shadow with yellow tint */
-    border: 2px solid #ff0000; /* Orange border for extra emphasis */
-}
-
-.toast-message.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0); /* Move to final position */
-}
-
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            nav {
-                padding: 0 12px;
-                height: 60px;
-            }
-            nav .logo {
-                font-size: 1.3em;
-            }
-            nav ul {
-                gap: 12px;
-                font-size: 0.9em;
-            }
-            .nav-search-country {
-                max-width: 300px;
-                gap: 10px;
-            }
-            .nav-search-country select.select,
-            .nav-search-country select.indian {
-                padding: 6px 10px;
-                font-size: 0.9em;
-            }
-            .search-input {
-                padding: 15px 38px 7px 12px;
-                font-size: 0.95em;
-            }
-            
-
-            .ad-banner {
-                height: 220px;
-            }
-            .ad-slide h3 {
-                font-size: 1.5em;
-                padding: 0 10px;
-            }
-            .categories-container {
-                padding-left: 8px;
-            }
-            .category-item {
-                padding: 7px 12px;
-                font-size: 0.85em;
-            }
-            .container {
-                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            }
-            .card img {
-                height: 150px;
-                margin: 8px;
-            }
-            .card-content h3 {
-                font-size: 1.1em;
-            }
-            .about-us {
-                font-size: 1em;
-                padding: 40px 12px;
-            }
-            .about-us h3 {
-                font-size: 1.6em;
-                margin-bottom: 14px;
-            }
-        }
-    </style>
+    <title>MED-CARE: Empowering Modern Healthcare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+   
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+   <style>
+        /* Modern Color Palette */
+        :root {
+            --primary-color: #00A79D; /* Modern Teal/Cyan - Trustworthy */
+            --primary-dark: #00877C;
+            --accent-color: #4BC0C0; /* Lighter Accent */
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --background-light: linear-gradient(40deg, #ffffff, #f7f2f2);
+            --background-body:white;
+            --shadow-light: rgba(0, 0, 0, 0.04);
+            --shadow-medium: rgba(0, 0, 0, 0.1);
+        }
+
+        /* RESET */
+        *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+        html, body { font-family: 'Inter', sans-serif; background: var(--background-body); color: var(--text-dark); min-height: 100vh; scroll-behavior: smooth; }
+        a { text-decoration: none; color: var(--primary-color); }
+        button, a.explore-btn { cursor: pointer; }
+
+        /* UTILITIES */
+        .page-section { padding: 20px 0; }
+        .main-container { max-width:1200px; margin:0 auto; padding:0 15px; }
+
+        /* NAVBAR */
+        nav {
+            position: fixed; top:0; left:0; width: 100%; height: 85px; display:flex; justify-content: space-between; align-items:center;
+            padding:0 30px; background: white; box-shadow:0 1px 10px var(--shadow-light); transition: 0.4s ease-in-out;
+            z-index: 10000;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+          
+        
+        }
+        nav.scrolled { background: var(--primary-color); box-shadow:0 4px 15px var(--shadow-medium); color:white; height: 60px;}
+        .logo-section { display:flex; align-items:center; gap:px; cursor:pointer; }
+        .main-logo-image { height:50px; width: auto; border-radius:5px; filter: drop-shadow(0 0 2px rgba(0,0,0,0.1)); }
+        .logo { font-weight:800; font-size:1.8em; letter-spacing:-0.5px; color:var(--primary-dark); transition:0.4s; }
+        nav.scrolled .logo { color:rgb(90, 87, 87); }
+        nav.scrolled .main-logo-image { filter: invert(0.5) drop-shadow(0 0 2px rgb(255, 255, 255)) ; }
+
+        .nav-links-main { display:flex; gap:35px; list-style:none; justify-content:center; flex-grow:1; transition:0.3s; }
+        .nav-links-main li a { font-weight:500; padding:5px 0px; border-radius:0; transition:0.3s; color:var(--text-dark); position: relative; }
+        
+        .nav-links-main li a:hover, .nav-links-main li a.active-link { color:var(--primary-color); }
+        .nav-links-main li a:hover::after, .nav-links-main li a.active-link::after { width: 100%; }
+        .nav-links-main li a::after {
+            content: ''; position: absolute; left: 0; bottom: -8px; width: 0; height: 3px;
+            background-color: var(--primary-color); transition: width 0.3s ease; border-radius: 1px;
+        }
+
+        nav.scrolled .nav-links-main li a { color: rgba(255,255,255,0.9); }
+        nav.scrolled .nav-links-main li a:hover, nav.scrolled .nav-links-main li a.active-link { color:white; }
+        nav.scrolled .nav-links-main li a:hover::after, nav.scrolled .nav-links-main li a.active-link::after { background-color: white; }
+
+        .nav-auth-buttons { display:flex; gap:12px; align-items:center; }
+        .sign-up-btn, .profile-btn {
+            padding:10px 22px; border-radius:30px; font-weight:600; text-decoration:none; transition:0.3s ease;
+            box-shadow: 0 4px 8px var(--shadow-light);
+        }
+        .sign-up-btn { color:var(--primary-color); background-color: white;}
+        .sign-up-btn:hover { background:var(--primary-dark);color: white; transform:translateY(-1px); box-shadow: 0 6px 12px rgba(0,167,157,0.3); }
+       
+        .profile-btn { color:black; background-color: white; }
+        .profile-btn:hover { background:var(--primary-dark);color: white; transform:translateY(-1px); box-shadow: 0 6px 12px rgba(0,167,157,0.3); }
+
+        nav.scrolled .profile-btn { color:var(--primary-color); background-color: white; }
+        nav.scrolled .profile-btn:hover { background:var(--primary-dark);color: white; transform:translateY(-1px); box-shadow: 0 6px 12px rgba(0,167,157,0.3); }
+
+        /* HERO */
+        .hero-banner {
+    position: relative;
+    margin-top: 0px;
+    width: 100%;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    border-radius: 10px;
+    
+    /* Base: Clean White for optimal product visibility */
+    background-color: white; 
+    
+    /* --- E-COMMERCE SLICE DESIGN CODE --- */
+    background-image:
+        /* 1. Main Diagonal Color Section */
+        linear-gradient(
+            -45deg,
+            white 45%, /* Starts as white */
+            var(--accent-color) 45.1%, /* Sharp transition to accent color */
+            var(--accent-color) 70%,
+            var(--primary-color) 100% /* Blends to primary color at the far edge */
+        );
+
+    background-size: 100% 100%;
+    /* You can adjust background-position if you use a photo that needs to align 
+       with the color slice. */
+    background-position: center center;
+    
+    /* Add a subtle shadow for a 'floating' clean product feel */
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); 
+    /* ----------------------------------- */
+}
+        
+
+        
+        .hero-background {
+            position:absolute; top:0; left:0; width:100%; height:100%;
+            background-image: url('https://images.unsplash.com/photo-1576091160399-112ba8d25d10?fit=crop&w=1920&q=80');
+            background-size:cover; background-position:center; filter: brightness(0.25) saturate(1.2); z-index:0;
+            opacity: 0.8; /* Slightly less harsh overlay */
+        }
+        .hero-content { position:relative; z-index:1; color:white; padding: 0 15px; }
+        .hero-content h1 { font-size:3.5em; font-weight:900; text-shadow:2px 2px 8px rgba(0,0,0,0.7); margin-bottom:20px; letter-spacing: 1px; }
+        .hero-content p { font-size:1.25em; max-width:700px; margin:auto 0 30px; font-weight: 300; text-shadow:1px 1px 4px rgba(0,0,0,0.5); }
+        .explore-btn { background:white; color:var(--primary-color); padding:15px 40px; border:none; border-radius:8px; font-weight:700; font-size:1.1em; text-decoration:none; transition:0.3s ease; box-shadow:0 6px 20px rgba(0,0,0,0.25); text-transform: uppercase; letter-spacing: 0.5px; }
+        .explore-btn:hover { background:#e2e6ea; transform:translateY(-3px); box-shadow:0 10px 25px rgba(56, 57, 80, 0.3); }
+
+        /* SEARCH BAR - REFACTORED */
+        .search-container-main { 
+            position: relative; max-width:800px; margin:-30px auto 30px; padding:0 15px; z-index:10; 
+            transition:0.3s; 
+            
+        }
+        .sticky-search-wrapper {
+            position: sticky;
+            top: 70px; /* Navbar height + 5px margin */
+            z-index: 9999;
+            background: var(--background-body);
+            padding: 10px 0;
+            margin-bottom: 30px;
+            
+            box-shadow: 0 4px 10px var(--shadow-light);
+            display: none; /* Hidden by default, shown on scroll */
+            transition: top 0.4s ease;
+        }
+        .sticky-search-wrapper.visible {
+            display: block;
+
+        }
+        #stickySearchInput {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+            padding: 15px 60px 15px 25px;
+            border-radius: 35px;
+            border: 1px solid var(--accent-color);
+            font-size: 1em;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+        }
+        #stickySearchInput:focus { outline:none; border-color: var(--primary-dark); box-shadow:0 0 0 3px var(--accent-color); }
+        .search-icon-sticky { position:absolute; right:35px; top:50%; transform:translateY(-40%); color:var(--primary-color); font-size:1.4em; pointer-events:none; }
+
+        .search-input-hero { 
+            width:100%; padding:18px 60px 18px 25px; border-radius:35px; border:none; font-size:1.1em; 
+            box-shadow:0 10px 30px rgba(0,0,0,0.15); transition:0.3s; background: white;
+        }
+        .search-input-hero:focus { outline:none; box-shadow:0 0 0 4px var(--accent-color), 0 10px 30px rgba(0,0,0,0.2); }
+        .search-icon-hero { position:absolute; right:35px; top:50%; transform:translateY(-45%); color:var(--primary-color); font-size:1.5em; pointer-events:none; }
+
+        /* CATEGORIES */
+        .categories-container { 
+            
+            width:100%;height: auto; background:#ffffff; padding:10px; margin-bottom:60px; margin-top: 70px; display:flex; overflow-x:auto; gap:5px; 
+            transition:0.3s; border-radius:20px; box-shadow:inset 0 0 5px var(--shadow-light);border-color: var(--primary-color);
+            border-width: 1px; 
+            
+        }
+        /* ... (rest of categories CSS unchanged) ... */
+        .categories-container::-webkit-scrollbar { height:8px; }
+        .categories-container::-webkit-scrollbar-thumb { background:var(--accent-color); border-radius:4px; }
+        .category-item { 
+            flex:none; padding:10px 20px; border-radius:30px; background:#e9f8fa; color:var(--primary-dark); 
+            font-weight:500; cursor:pointer; transition:0.3s; white-space:nowrap; border:1px solid #c8e6c9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            font-size: small;
+            margin-left: 20px;
+            margin-top: 5px;
+            margin-bottom: 5px; 
+        }
+        
+        .category-item:hover { background:var(--accent-color); color:white; font-size: medium; font-weight: 500;  }
+        .category-item.active { background:var(--primary-dark); color:white; box-shadow:0 4px 15px rgba(0,167,157,0.4); border-color: var(--primary-dark);font-size: medium; font-weight: 700; }
+        .category-item a { color: inherit; }
+
+
+        /* PAGE TITLE */
+        .page-title { 
+            text-align:center; margin:20px auto 40px; max-width:1000px; padding: 10px; color:white; 
+              background-color: var(--primary-color);
+              border-radius: 20px;
+              border-width: 1;
+              border-color: rgb(134, 124, 124);
+           font-size:2.em; font-weight:500; 
+            text-transform:uppercase; letter-spacing:4px;
+        }
+
+        /* CARDS */
+        /* ... (rest of cards CSS unchanged) ... */
+        .main-container { max-width:1200px; margin:0 auto 60px; padding:0 15px; }
+        .container { display:grid; grid-template-columns:repeat(auto-fill, minmax(290px,1fr)); gap:30px; }
+        .card { 
+            background:white; border-radius:16px; box-shadow:0 8px 20px var(--shadow-medium); 
+            display:flex; flex-direction:column; transition:0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition */
+            border:none; cursor:pointer; overflow: hidden;
+        }
+        .card:hover { 
+            transform:translateY(-8px); 
+            box-shadow:0 16px 35px rgba(0,0,0,0.2), 0 0 0 4px var(--primary-color); 
+        }
+        .card img { 
+            width:100%; height:240px; object-fit:cover; 
+            border-radius:16px 16px 0 0; transition: transform 0.4s;
+        }
+        .card:hover img { transform: scale(1.03); }
+
+        .card-content { padding:20px 25px 25px; display:flex; flex-direction:column; flex-grow:1; }
+        .card-content h3 { color:var(--primary-dark); font-size:1.5em; margin-bottom:8px; font-weight: 700; }
+        .card-content p { font-size:0.95em; color:var(--text-light); flex-grow:1; margin:4px 0 10px; line-height: 1.5; }
+        .card-content .price { color:#e74c3c; font-weight:800; font-size:1.4em; margin-top:10px; }
+        .button-row { display:flex; gap:12px; margin-top:20px; }
+        .add-to-cart, .order { 
+            flex:1; padding:12px; font-weight:600; border-radius:10px; border:none; cursor:pointer; 
+            text-transform:uppercase; font-size:0.9em; transition:0.3s; letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .add-to-cart { background:#2ecc71; color:white; }
+        .add-to-cart:hover { background:#27ae60; transform:translateY(-2px); box-shadow: 0 4px 8px rgba(46,204,113,0.4); }
+        .order { background:var(--primary-color); color:white; }
+        .order:hover { background:var(--primary-dark); transform:translateY(-2px); box-shadow: 0 4px 8px rgba(0,167,157,0.4); }
+
+        /* ABOUT / CONTACT SECTIONS */
+        .about-us, .contact-info {
+            padding: 70px 20px;
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .about-us { 
+            background: linear-gradient(135deg,var(--primary-dark) 0%,var(--primary-color) 100%); 
+            color:white;
+        }
+        .about-us h3, .contact-info h3 { font-size:2.5em; margin-bottom:20px; font-weight:900; letter-spacing:4px; text-transform:uppercase; text-shadow:0 0 10px rgba(0,0,0,0.5); }
+        .about-us p { max-width:900px; margin:0 auto 15px; line-height:1.7; font-weight: 300; font-size: 1.1em; text-shadow:0 0 5px rgba(0,0,0,0.25); }
+
+        .contact-info {
+            background: var(--background-light);
+            color: var(--text-dark);
+        }
+        .contact-details {
+            display: flex; justify-content: center; gap: 40px; margin-top: 30px; flex-wrap: wrap;
+        }
+        .contact-details div {
+            flex: 0 0 250px; text-align: left; padding: 20px; border-radius: 10px; background: white; box-shadow: 0 4px 15px var(--shadow-medium);
+            border-top: 5px solid var(--accent-color);
+        }
+        .contact-details i { font-size: 1.5em; color: var(--primary-color); margin-right: 10px; }
+        .contact-details h4 { margin-bottom: 10px; font-size: 1.2em; color: var(--primary-dark); }
+        .contact-details p { font-size: 1em; color: var(--text-light); margin: 5px 0; }
+        .contact-details a { display: block; margin-top: 5px; font-weight: 500;}
+
+        /* FOOTER - ATTRACTIVE */
+        footer {
+            background: var(--text-dark); /* Dark background for contrast */
+            color: white;
+            padding: 60px 30px 20px;
+            font-size: 0.9em;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        .footer-logo-section { flex: 0 0 300px; }
+        .footer-logo { font-weight: 800; font-size: 1.5em; color: var(--primary-color); margin-bottom: 15px; }
+        .footer-logo-section p { color: #bdc3c7; line-height: 1.6; }
+
+        .footer-links-group { display: flex; gap: 60px; }
+        .footer-links h4 { font-size: 1.1em; margin-bottom: 15px; color: var(--accent-color); border-bottom: 2px solid var(--primary-dark); padding-bottom: 5px; }
+        .footer-links ul { list-style: none; }
+        .footer-links ul li { margin-bottom: 8px; }
+        .footer-links ul li a { color: #bdc3c7; transition: color 0.3s; }
+        .footer-links ul li a:hover { color: var(--primary-color); }
+
+        .footer-social { margin-top: 15px; }
+        .footer-social a { color: white; margin-right: 15px; font-size: 1.5em; transition: color 0.3s; }
+        .footer-social a:hover { color: var(--primary-color); }
+
+        .footer-bottom { 
+            text-align: center; border-top: 1px solid var(--primary-dark); margin-top: 40px; padding-top: 20px;
+            color: #95a5a6;
+        }
+
+        /* TOAST */
+        .toast-message { visibility:hidden; min-width:300px; margin-left:-150px; background:#c0392b; color:white; text-align:center; border-radius:12px; padding:18px 30px; position:fixed; z-index:10001; left:50%; bottom:40px; font-size:1.1em; font-weight:700; opacity:0; transform:translateY(20px); transition:0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); box-shadow:0 8px 20px rgba(192,57,43,0.5); border:3px solid #f99; }
+        .toast-message.show { visibility:visible; opacity:1; transform:translateY(0); }
+
+        /* RESPONSIVE */
+        @media(max-width:1050px){ .nav-links-main{gap:20px;} }
+        @media(max-width:900px){ 
+            .nav-links-main{display:none;} 
+            .hero-content h1{font-size:2.8em;} 
+            .hero-content p{font-size:1.1em;} 
+            .search-container-main{max-width:90%;} 
+            .container{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));} 
+            .card{border-radius:12px;} 
+            .card img{height:200px; border-radius:12px 12px 0 0;}
+            .footer-links-group { gap: 30px; }
+        }
+        @media(max-width:600px){ 
+            nav{padding:0 15px;height:65px;} 
+            .hero-banner{height:380px; margin-top: 65px;} 
+            .hero-content h1{font-size:2.2em; margin-bottom:15px;} 
+            .hero-content p{font-size:1em; margin-bottom:20px;} 
+            .explore-btn{padding:12px 30px; font-size:1em;}
+            .search-container-main{max-width:90%; margin-top: -30px;} 
+            .search-input-hero{padding:15px 50px 15px 20px;font-size:1em;} 
+            .search-icon-hero{right:28px; font-size:1.3em;}
+            .categories-container{padding:10px 15px; border-radius:8px;} 
+            .category-item{font-size:0.9em;padding:8px 15px;} 
+            .page-title{font-size:1.5em; letter-spacing: 2px; padding:15px;}
+            .container{grid-template-columns:1fr;gap:20px;} 
+            .card img{height:250px;} 
+            .card-content h3{font-size:1.3em;} 
+            .about-us{padding:50px 15px;} 
+            .about-us h3{font-size:2em;} 
+            .about-us p{font-size:1em;}
+            .nav-auth-buttons .profile-btn { padding: 8px 15px; font-size: 0.9em; }
+            .nav-auth-buttons .sign-up-btn { padding: 8px 15px; font-size: 0.9em; }
+            .footer-content { justify-content: center; text-align: center; }
+            .footer-logo-section { flex: 0 0 100%; margin-bottom: 20px;}
+            .footer-links-group { flex-direction: column; gap: 20px; width: 100%; align-items: center;}
+            .footer-links { width: 100%; }
+        }
+
+        /* start here  */
+
+
+         /* Custom Styles for Scroll and Card Appearance */
+        :root {
+            /* Define the background gradient from the user's request */
+            --gradient-subtle: linear-gradient(30deg, #ffffff, #eeebeb);
+            /* Soft Blue from the image */
+            --color-blue: #D6EAF8;
+            /* Soft Yellow/Orange from the image */
+            --color-orange: #FAEBD7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Only apply background style here, no layout classes */
+            background: var(--gradient-subtle); 
+        }
+
+        /* Container for the horizontal scrolling area */
+        .scroll-container {
+            display: flex;
+            overflow-x: scroll;
+            /* Enables smooth scrolling animation */
+            scroll-behavior: smooth; 
+            /* Forces cards to snap to the center when scrolling stops */
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+            /* Hide the scrollbar visually */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            /* Add padding to the scroll container ends to center the first/last cards properly */
+            padding: 0 10vw; /* Padding calculation relies on card width of 85vw on mobile */
+        }
+        
+        @media (min-width: 768px) {
+             .scroll-container {
+                padding: 0 20px; /* Smaller padding on desktop since cards are narrower */
+             }
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Styling for each individual card (the "box") */
+        .feature-card {
+            flex: 0 0 auto; /* Prevent cards from shrinking */
+            width: 85vw; /* Start with 85% width on small screens */
+            max-width: 600px; /* Max width on desktop */
+            height: auto;
+            margin: 0 10px; /* Space between cards */
+            scroll-snap-align: center;
+            /* START OF CREATIVE SCROLLING CHANGE: All cards start scaled down */
+            transform: scale(0.9);
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out; 
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05); /* Soft shadow */
+        }
+        
+        /* The effect for the centered card */
+        .feature-card.is-centered {
+            transform: scale(1.05); /* Increased scale when centered to make it stand out */
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2); /* Stronger shadow when focused */
+        }
+
+        /* Media query for tablet/desktop views */
+        @media (min-width: 768px) {
+            .feature-card {
+                width: 300px; /* Smaller width on desktop to fit more */
+                /* Adjust padding on scroll container to ensure center snap works well */
+                margin: 0 20px;
+            }
+        }
+
+        /* --- New Header Animation Styles --- */
+        
+        /* Animation Keyframes: Reveal from center to sides */
+        @keyframes slideIn {
+            from {
+                transform: scaleX(0); /* Start completely compressed horizontally */
+                opacity: 0;
+            }
+            to {
+                transform: scaleX(1); /* End fully open */
+                opacity: 1;
+            }
+        }
+
+        /* Class to apply the animation to the header */
+        .slide-in-animation {
+            transform-origin: center center; /* Start the animation from the center point */
+            animation: slideIn 1.0s ease-out forwards; /* Apply the animation */
+            opacity: 0; /* Start hidden before animation */
+        }
+        /* end here  */
+
+
+
+
+
+/* --------------------------------------------------------------------------------------------------------------- */
+
+/* Basic container for the carousel */
+.image-carousel {
+    position: relative;
+    width: 80%; /* Adjust as needed */
+    height: auto;
+    max-width: 1200px;
+    margin: 40px; /* Changed to 'auto' to ensure centering */
+    overflow: hidden;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: white;
+    border-width: 1px;
+}
+
+/* Container for the images */
+.carousel-images {
+    display: flex;
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Modern aspect ratio for a clean look */
+}
+
+/* Individual image styling */
+.carousel-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+/* Only the active image is shown */
+.carousel-images img.active-image {
+    display: block; 
+}
+
+
+/* --- BEST ARROW STYLING (UPDATED) --- */
+.carousel-arrow {
+    /* Positioning */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-40%);
+    
+    /* Shape and Size */
+    width: 40px; /* Larger hit area */
+    height: 40px; /* Larger hit area */
+    border-radius: 50%; /* Perfect circle */
+    
+    /* Visuals */
+    background-color: rgb(248, 243, 243); /* Semi-transparent White background */
+    color: var(--primary-color); /* Dark arrow color */
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    
+    /* Text/Icon */
+    font-size: 20px; /* Smaller icon inside the large button */
+    font-weight: bold;
+    cursor: pointer;
+    
+    /* Centering the icon inside the button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Transitions */
+    transition: all 0.3s ease-in-out;
+    z-index: 10;
+}
+
+.carousel-arrow:hover {
+    background-color: var(--primary-color); /* Primary color on hover */
+    color: white; /* White arrow on hover */
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.5);
+    transform: translateY(-50%) scale(1.05); /* Slight lift and scale */
+}
+
+.left-arrow {
+    left: 15px; /* Move slightly further from the edge */
+}
+
+.right-arrow {
+    right: 15px; /* Move slightly further from the edge */
+}
+/* ------------------------------------- */
+
+
+/* Styling for the Indicators (1, 2, 3) */
+.carousel-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 15;
+}
+
+.indicator {
+    display: inline-block;
+    width: 23px;
+    height: 23px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #333;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.indicator:hover {
+    background-color: white;
+}
+
+/* Active indicator style */
+.indicator.active-indicator {
+    background-color: var(--primary-color); /* Primary color */
+    color: white;
+    font-size: 12px;
+    width:26px;
+    height: 26px;
+    border: 2px solid white;
+}
+
+
+
+
+/* 🌿 SOCIAL BAR WITH MERGE + SHIMMER ANIMATION */
+.social-bar {
+  --primary-color: #b3e0ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  background: linear-gradient(
+    120deg,
+    var(--primary-color),
+    #ffffff,
+    var(--primary-color)
+  );
+  padding: 6px 0;
+  border-radius: 12px;
+  height: 38px;
+  margin-top: 85px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ✨ Shimmer effect moving once */
+.social-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 2.5s ease-out 0.5s forwards;
+  pointer-events: none;
+}
+
+/* ICONS */
+.social-bar a {
+  color: #2f2f2f;
+  font-size: 18px;
+  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  animation: floatIn 1.2s ease forwards;
+}
+
+/* Sequential delays for merge effect */
+.social-bar a:nth-child(1) { animation-delay: 0.3s; }
+.social-bar a:nth-child(2) { animation-delay: 0.5s; }
+.social-bar a:nth-child(3) { animation-delay: 0.7s; }
+.social-bar a:nth-child(4) { animation-delay: 0.9s; }
+.social-bar a:nth-child(5) { animation-delay: 1.1s; }
+.social-bar a:nth-child(6) { animation-delay: 1.3s; }
+
+/* 🌈 Hover Effects (Glow + Pop) */
+.social-bar a:hover {
+  transform: scale(1.3);
+  text-shadow: 0 0 12px currentColor;
+}
+
+/* Individual Hover Colors */
+.linkedin:hover { color: #0A66C2; }
+.whatsapp:hover { color: #25D366; }
+.instagram:hover { color: #E1306C; }
+.facebook:hover { color: #1877F2; }
+.phone:hover { color: #00bcd4; }
+.gmail:hover { color: #EA4335; }
+
+/* 🎬 ANIMATIONS */
+@keyframes floatIn {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.85);
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1.05);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* One-time shimmer line */
+@keyframes shimmer {
+  0% { left: -150%; }
+  100% { left: 150%; }
+}
+
+
+.owner{
+    color: #9090a5;
+    font-style: italic;
+    font-weight: 800;
+    text-align: start;
+    margin-left: 20px;
+    margin-right: 730px;
+}
+
+
+    </style>
+
 </head>
+
 <body>
-       {% load static %}
-    <nav>
+{% load static %}
+<nav id="navbar">
     <div class="logo-section">
-        <img src="{% static 'images/agro-removebg-preview.png' %}" alt="AGRO-FARM Logo" class="main-logo-image">
-        <div class="logo">AGRO-FARM</div>
+        <img src="{% static 'logo.png' %}" alt="MED-CARE Logo" class="main-logo-image">
+        <div class="logo">MED-CARE</div>
     </div>
-
-    <div class="nav-search-country">
-        <div class="search-input-container">
-            <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
-            <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
-        </div>
-
-        <select class="indian" aria-label="Select country">
-            <option value="india">India</option>
-            <option value="sri_lanka">Sri Lanka</option>
-            <option value="canada">Canada</option>
-            <option value="australia">Australia</option>
-        </select>
+    <ul class="nav-links-main">
+        <li><a href="{% url 'home' %}" class="active-link">Home</a></li>
+        <li><a href="#about-us-section">About</a></li>
+        <li><a href="#itemsContainer">Products</a></li>
+        <li><a href="#contact-section">Contact</a></li>
+    </ul>
+    <div class="nav-auth-buttons">
+        {% if profile_name %}
+            <a href="{% url 'profile' %}" class="profile-btn"><i class="fa-solid fa-user"></i> {{profile_name}}</a>
+        {% else %}
+            <a href="{% url 'second' %}" class="sign-up-btn" data-signed-in="false">Sign up</a>
+            <a href="{% url 'profile' %}" class="profile-btn"><i class="fa-solid fa-user"></i> Profile</a>
+        {% endif %}
     </div>
-
-    <ul class="nav-links-section">
-        <li><a href="{% url 'home' %}" class="active">
-            <img src="{% static 'images/download-removebg-preview (1).png' %}" > {# Placeholder image, replace with your actual home icon #}
-            <span>Home</span>
-        </a></li>
+    <ul class="nav-links-functional" style="display:none;">
         <li id="profile-link-container">
             {% if profile_name %}
-                <a href="{% url 'profile' %}" data-signed-in="true">
-                    <img src="{% static 'images/p3-removebg-preview.png' %}" > {# Placeholder image #}
-                    <span>{{ profile_name }}</span>
-                </a>
+                <a href="{% url 'profile' %}" data-signed-in="true"><span>{{ profile_name }}</span></a>
             {% else %}
-                <a href="{% url 'second' %}" data-signed-in="true">
-                    <img src="{% static 'images/user-removebg-preview.png' %}"> {# Placeholder image #}
-                    <span>Signin/Signup</span>
-                </a>
+                <a href="{% url 'second' %}" data-signed-in="false"><span>Signin/Signup</span></a>
             {% endif %}
-
-
         </li>
-        <li><a href="{% url 'carts' %}" >
-            <img src="{% static 'images/new_cart-removebg-preview.png' %}"> {# Placeholder image #}
-            <span>Carts</span>
-        </a></li>
-        <li><a href="{% url 'order' %}" >
-            <img src="{% static 'images/images-removebg-preview (3).png' %}"> {# Placeholder image #}
-            <span>Order</span>
-        </a></li>
-        <li><a href="{% url 'profile' %}">
-            <img src="{% static 'images/save-removebg-preview.png' %}" > {# Placeholder image #}
-            <span>Logout</span>
-        </a></li>
+        <li><a href="{% url 'carts' %}" ><span>Carts</span></a></li>
+        <li><a href="{% url 'order' %}" ><span>Order</span></a></li>
+        <li><a href="{% url 'profile' %}"><span>Logout</span></a></li>
     </ul>
 </nav>
 
-    <div class="ad-banner" role="banner" aria-label="Advertisement banner">
-        <div class="ad-slide-container">
-            {% for ad in adds %}
-            <div class="ad-slide {% if forloop.first %}active{% endif %}">
-                <img src="{{ ad.advertisement.url }}" alt="Advertisement Image" />
-                <h3>{{ ad.brief }}</h3>
-            </div>
-            {% empty %}
-            <p>No advertisements available.</p>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div class="categories-container" id="categoryList" role="navigation" aria-label="Category selection">
-    <div class="category-item {% if not request.GET.category %}active{% endif %}">
-        <a href="{% url 'home' %}" style="text-decoration: none; color: inherit;">
-            ALL Products
-        </a>
-    </div>
-    {% for i in category %}
-        <div class="category-item {% if request.GET.category == i.id|stringformat:"s" %}active{% endif %}">
-            <a href="{% url 'home' %}?category={{ i.id }}" style="text-decoration: none; color: inherit;">
-                {{ i.name }}
-            </a>
-        </div>
-    {% endfor %}
+<div class="social-bar">
+    <p class="owner">Founder :- Haiderali</p>
+  <a href="https://www.linkedin.com/in/mahi-singh-b772382b4" target="_blank" class="linkedin"><i class="fab fa-linkedin-in"></i></a>
+  <a href="https://wa.me/919876543210" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a>
+  <a href="https://www.instagram.com" target="_blank" class="instagram"><i class="fab fa-instagram"></i></a>
+  <a href="https://www.facebook.com" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a>
+  <a href="tel:+919876543210" class="phone"><i class="fas fa-phone"></i></a>
+  <a href="mailto:example@gmail.com" class="gmail"><i class="fas fa-envelope"></i></a>
 </div>
 
 
-    <h1 class="page-title">"Harvesting Tomorrow, One Seed at a Time!"</h1>
 
 
-    <div class="main-container" role="main">
-    <div class="container">
+
+<div class="hero-banner">
+    <div class="hero-background"></div>
+    <div class="hero-content">
+        <h1>Empowering Modern Healthcare</h1>
+        <p>Reliable medical equipment and supplies designed for hospitals, clinics, and care centers worldwide.</p>
+        <a href="#itemsContainer" class="explore-btn">EXPLORE PRODUCTS</a>
+    </div>
+    
+
+    
+ <!-- image section  -->
+<div class="image-carousel">
+        <button class="carousel-arrow left-arrow">&#10094;</button>
+        <div class="carousel-images">
+            <img src="{% static 'add2.png' %}" alt="Medical Equipment 1" class="active-image">
+            <img src="{% static 'add1.png' %}" alt="Medical Equipment 2">
+            <img src="{% static 'add2.png' %}" alt="Medical Equipment 3">
+        </div>
+        <button class="carousel-arrow right-arrow">&#10095;</button>
+
+        <div class="carousel-indicators">
+            <span class="indicator active-indicator">1</span>
+            <span class="indicator">2</span>
+            <span class="indicator">3</span>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="search-container-main">
+    <input type="search" id="heroSearchInput" placeholder="Search medical devices, supplies, or consumables..." class="search-input-hero" aria-label="Search medical items"/>
+    <div class="search-icon-hero"><i class="fa-solid fa-magnifying-glass"></i></div>
+</div>
+
+<div class="sticky-search-wrapper" id="stickySearchWrapper">
+    <div class="main-container" style="padding: 0 15px;">
+        <input type="search" id="stickySearchInput" placeholder="Search medical supplies..." aria-label="Search medical items sticky"/>
+        <div class="search-icon-sticky" style="right: 30px; transform: translateY(-32px);"><i class="fa-solid fa-magnifying-glass"></i></div>
+    </div>
+</div>
+
+<div class="categories-container" id="categoryList" role="navigation" aria-label="Product categories">
+    <div class="category-item {% if not request.GET.category %}active{% endif %}">
+        <a href="{% url 'home' %}" style="text-decoration: none; color: inherit;">All Products</a>
+    </div>
+    {% for i in category %}
+    <div class="category-item {% if request.GET.category == i.id|stringformat:"s" %}active{% endif %}">
+        <a href="{% url 'home' %}?category={{ i.id }}" style="text-decoration: none; color: inherit;">
+            {{ i.name | default:"Category Name" }} 
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="main-container" role="main">
+    <h1 class="page-title">Featured Medical Supplies & Equipment</h1>
+    <div class="container" id="itemsContainer">
         {% for item in items %}
             <div class="card" onclick="window.location.href='Detail_product.html?name={{ item.name }}&description={{ item.description }}&price={{ item.price }}&image={{ item.image.url }}'">
                 <img src="{{ item.image.url }}" alt="{{ item.name }}" />
                 <div class="card-content">
-                    <h3>{{ item.name }}</h3>
-                    <p>{{ item.description }}</p>
-                    <p class="price">${{ item.price }}</p>
-                    <button class="add-to-cart" aria-label="Add {{item.name}} to cart"
-                            onclick="event.stopPropagation(); addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image.url }}')">
-                        Add to Cart
-                    </button>
-                  <button class="order" aria-label="Order {{item.name}}"
-            onclick="event.stopPropagation(); addtoorder('{{ item.name }}','{{ item.price }}','{{ item.image.url }}')">
-        Order
-    </button>
-
-</div>
+                    <h3>{{ item.name | default:"Essential Medical Kit" }}</h3>
+                    <p>{{ item.description | default:"High-quality, certified medical product for professional use." }}</p>
+                    <p class="price">RS : {{ item.price | default:"999.00" }}</p>
+                    <div class="button-row">
+                        <button class="add-to-cart" aria-label="Add {{item.name}} to cart"
+                                onclick="event.stopPropagation(); addToCart('{{ item.name }}', '{{ item.price }}', '{{ item.image.url }}')">
+                            Add to Cart
+                        </button>
+                        {% if profile_name %}
+                        <button class="order" aria-label="Order {{item.name}}"
+                            onclick="event.stopPropagation(); addtoorder('{{ item.name }}','{{ item.price }}','{{ item.image.url }}')">
+                            Order Now
+                        </button>
+                        {% else %}
+                        <button class="order" aria-label="Order {{item.name}}"
+                            onclick="event.stopPropagation(); showToast('!! Please sign in to place an order. !!')">
+                            Order Now
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         {% empty %}
-            <p>No items available.</p>
+            <p style="grid-column: 1 / -1; text-align: center; padding: 50px; font-size: 1.2em; color: var(--text-light);">
+                <i class="fa-solid fa-triangle-exclamation" style="color: #e74c3c; margin-right: 10px;"></i>
+                No medical products available at this time. Please check back later!
+            </p>
         {% endfor %}
     </div>
 </div>
 
-    <div id="toast" class="toast-message"></div>
+<div id="toast" class="toast-message"></div>
 
-    <section class="about-us" aria-labelledby="about-us-title">
-        <h3 id="about-us-title">About Us</h3>
-        <p>Welcome to AGRO-FARM, your trusted partner for quality agricultural products. We are committed to providing fresh items directly from farm to your home with utmost care and reliability.</p>
-        <p>Our mission is to empower farmers and promote sustainable agriculture while offering customers the best products with excellent service. Thank you for choosing AGRO-FARM!</p>
-    </section>
+<!-- start -->
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Advertisement slide logic
-        const slides = document.querySelectorAll('.ad-slide');
-        let current = 0;
-        const slideCount = slides.length;
-        const intervalTime = 5000; // 5 seconds
 
-        if (slideCount > 1) {
-            setInterval(() => {
-                slides[current].classList.remove('active');
-                current = (current + 1) % slideCount;
-                slides[current].classList.add('active');
-            }, intervalTime);
+    <!-- NEW WRAPPER DIV: All layout/spacing classes are now here -->
+    <div class="min-h-screen p-4 md:p-12 flex flex-col items-center"  id="about-us-section">
+
+        <header class="text-center mb-10 w-full max-w-4xl slide-in-animation"  >
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-2">
+                MED-CARE: Our Core Commitments
+            </h1>
+            <p class="text-gray-500 max-w-2xl mx-auto">
+                Welcome to MED-CARE, your global source for trusted medical equipment and supplies. We define our service through these six pillars of excellence.
+            </p>
+        </header>
+
+        <!-- Scrolling Feature Container Wrapper for arrows -->
+        <!-- Added relative positioning for arrow placement -->
+        <div class="relative w-full max-w-6xl mx-auto px-10 md:px-0">
+            
+            <!-- Left Arrow Navigation -->
+            <button id="nav-left" class="absolute hidden md:block left-[-60px] top-1/2 transform -translate-y-1/2 z-10 p-4 rounded-full bg-white shadow-xl transition duration-300 hover:scale-110 hover:bg-gray-50 text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Scroll left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="var(--primary-color)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <!-- Scrolling Feature Container -->
+            <div id="card-container" class="scroll-container w-full py-6 md:py-10">
+
+                <!-- Card 1: Global Reach (Blue Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-blue)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#007ACC]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5a2.5 2.5 0 002.5 2.5h1a2.5 2.5 0 012.5 2.5v1a2.5 2.5 0 002.5 2.5h1a2.5 2.5 0 012.5 2.5v1.5M16 8.5h-1A2.5 2.5 0 0012.5 6v-1A2.5 2.5 0 0115 3h1a2.5 2.5 0 002.5-2.5V.5"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Global Reach</h4>
+                    <p class="text-sm">Delivering reliable, certified healthcare products and swift logistics to institutions and professionals across the globe.</p>
+                </div>
+
+                <!-- Card 2: Certified Quality (Orange Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-orange)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.236 9 11.664 5.176-1.428 9-6.073 9-11.664-.083-1.412-.325-2.825-.76-4.21"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Certified Quality</h4>
+                    <p class="text-sm">We maintain the highest standards and certifications for all products, ensuring quality and safety for every patient and clinician.</p>
+                </div>
+
+                <!-- Card 3: Specialized Focus (Blue Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-blue)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#007ACC]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-1a5 5 0 115 5h3a4 4 0 11-4 4v-11a5 5 0 00-5-5z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Specialized Focus</h4>
+                    <p class="text-sm">We specialize in disposable consumables, advanced diagnostic tools, and essential protective equipment to meet critical needs.</p>
+                </div>
+
+                <!-- Card 4: Client Partnership (Orange Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-orange)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M12 10a3 3 0 100-6 3 3 0 000 6zm-7 6.5A5.002 5.002 0 0112 14a5.002 5.002 0 017-2.5"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Client Partnership</h4>
+                    <p class="text-sm">We are dedicated partners to healthcare professionals, offering unparalleled support and swift responses for critical supply needs.</p>
+                </div>
+
+                <!-- Card 5: Safety & Compliance (Blue Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-blue)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#007ACC]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.236 9 11.664 5.176-1.428 9-6.073 9-11.664-.083-1.412-.325-2.825-.76-4.21"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Safety & Compliance</h4>
+                    <p class="text-sm">Our mission is dedicated to upholding quality, safety, and strict compliance standards for superior patient care outcomes.</p>
+                </div>
+                
+                <!-- Card 6: Supply Chain Swiftness (Orange Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-orange)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Supply Chain Swiftness</h4>
+                    <p class="text-sm">We ensure rapid logistics and guaranteed delivery efficiency, getting critical supplies to you exactly when and where they are needed.</p>
+                </div>
+
+            </div>
+            <!-- End Scroll Container -->
+
+            <!-- Right Arrow Navigation -->
+            <button id="nav-right" class="absolute hidden md:block right-[-60px] top-1/2 transform -translate-y-1/2 z-10 p-4 rounded-full bg-white shadow-xl transition duration-300 hover:scale-110 hover:bg-gray-50 text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Scroll right">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="var(--primary-color)">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width=".8" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+        </div>
+        <!-- End Scroll Container Wrapper -->
+    </div>
+    <!-- End NEW WRAPPER DIV -->
+
+
+    <!-- end here -->
+
+<section class="contact-info page-section" id="contact-section" aria-labelledby="contact-title">
+    <div class="main-container">
+        <h3 id="contact-title" style="text-shadow: none;">Contact Us</h3>
+        <p style="font-size: 1.1em; max-width: 700px; margin: 0 auto 40px; color: var(--text-dark);">We're here to help with your orders, technical support, and partnership inquiries.</p>
+        <div class="contact-details">
+            <div>
+                <h4><i class="fa-solid fa-phone"></i> Sales Support</h4>
+                <p>Call us for orders and pricing.</p>
+                <a href="tel:+911234567890">+91 123 456 7890</a>
+            </div>
+            <div>
+                <h4><i class="fa-solid fa-envelope"></i> General Inquiry</h4>
+                <p>Email our customer service team.</p>
+                <a href="mailto:info@medcare.com">info@medcare.com</a>
+            </div>
+            <div>
+                <h4><i class="fa-solid fa-location-dot"></i> Our Office</h4>
+                <p>MED-CARE Global HQ</p>
+                <p>101 Medical Way, Health City, 90001</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo-section">
+            <div class="footer-logo">MED-CARE</div>
+            <p>Empowering healthcare with quality supplies. Your trusted partner in medical distribution and logistics.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+        <div class="footer-links-group">
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#about-us-section">About Us</a></li>
+                    <li><a href="#contact-section">Contact</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Products</h4>
+                <ul>
+                    <li><a href="{% url 'home' %}?category=1">IV & Injection</a></li>
+                    <li><a href="{% url 'home' %}?category=3">Urology & Drainage</a></li>
+                    <li><a href="{% url 'home' %}?category=5">Gloves & PPE</a></li>
+                    <li><a href="#itemsContainer">All Supplies</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="{% url 'profile' %}">My Profile</a></li>
+                    <li><a href="{% url 'carts' %}">View Cart</a></li>
+                    <li><a href="{% url 'order' %}">Track Order</a></li>
+                    <li><a href="{% url 'second' %}">Sign In / Register</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2025 MED-CARE. All rights reserved. Designed for Modern Healthcare.
+    </div>
+</footer>
+
+    <script>
+        // SCROLL EFFECT LOGIC (Updated to handle both Navbar and Sticky Search)
+        const navbar = document.getElementById("navbar");
+        const stickySearchWrapper = document.getElementById("stickySearchWrapper");
+        const stickySearchOffset = document.querySelector('.search-container-main').offsetTop;
+
+        window.onscroll = function() {
+            const scrollY = document.body.scrollTop || document.documentElement.scrollTop;
+
+            // 1. Navbar Scroll
+            if (scrollY > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+
+            // 2. Sticky Search Bar Visibility
+            // Show sticky search when scrolled past the initial search bar
+            // Use 200px as a buffer past the hero section's height (500px + 75px nav = 575px)
+            if (scrollY > 550) { 
+                stickySearchWrapper.classList.add("visible");
+            } else {
+                stickySearchWrapper.classList.remove("visible");
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // ORIGINAL AD SLIDE LOGIC (KEPT BUT NOT VISUALLY USED, AS PER INSTRUCTION)
+            const slides = document.querySelectorAll('.ad-slide');
+            let current = 0;
+            const slideCount = slides.length;
+            const intervalTime = 5000;
+
+            if (slideCount > 1) {
+                setInterval(() => {
+                    slides[current].classList.remove('active');
+                    current = (current + 1) % slideCount;
+                    slides[current].classList.add('active');
+                }, intervalTime);
+            }
+
+            // Category selection logic (Unchanged)
+            const categoryList = document.getElementById('categoryList');
+            const categoryItems = categoryList.querySelectorAll('.category-item');
+
+            categoryItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    categoryItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                });
+            });
+
+            // Search functionality - Connect Hero and Sticky Search to filter logic
+            const heroSearchInput = document.getElementById('heroSearchInput');
+            const stickySearchInput = document.getElementById('stickySearchInput');
+            const itemsContainer = document.getElementById('itemsContainer');
+            const cards = itemsContainer.getElementsByClassName('card');
+
+            function filterProducts(searchValue) {
+                for (let i = 0; i < cards.length; i++) {
+                    const card = cards[i];
+                    const itemName = card.querySelector('h3').textContent.toLowerCase();
+                    const itemDescription = card.querySelector('p').textContent.toLowerCase();
+
+                    if (itemName.includes(searchValue) || itemDescription.includes(searchValue)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            }
+
+            heroSearchInput.addEventListener('keyup', function() {
+                const searchValue = this.value.toLowerCase();
+                stickySearchInput.value = this.value; // Sync with sticky search
+                filterProducts(searchValue);
+            });
+            
+            stickySearchInput.addEventListener('keyup', function() {
+                const searchValue = this.value.toLowerCase();
+                heroSearchInput.value = this.value; // Sync with hero search
+                filterProducts(searchValue);
+            });
+        });
+
+        // Function to show a toast message (Unchanged)
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(function(){
+                toast.classList.remove("show");
+            }, 1500);
         }
 
-        // Category selection logic
-        const categoryList = document.getElementById('categoryList');
-        const categoryItems = categoryList.querySelectorAll('.category-item');
+        // Function to Add to Cart (Logic Unchanged)
+        function addToCart(name, price, image) {
+            const profileLink = document.querySelector('#profile-link-container a');
+            const isSignedIn = profileLink && profileLink.dataset.signedIn === 'true';
 
-        categoryItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                // Remove 'active' class from all
-                categoryItems.forEach(i => i.classList.remove('active'));
-                // Add 'active' class to clicked item
-                item.classList.add('active');
-                // Allow normal link navigation, no JS filtering added currently
+            if (!isSignedIn) {
+                showToast("!! Please make sure account is active !!");
+                return; 
+            }
+
+            const url = `/cartinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&image=${encodeURIComponent(image)}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = 'carts.html';
+                    } else {
+                        console.error('Failed to add item to cart');
+                        showToast("!! Please make sure account is active !!");
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error:', error);
+                    showToast("An error occurred. Please try again.");
+                });
+        }
+
+        // Function to Order (Logic Unchanged)
+        function addtoorder(name, price, image) {
+            const profileLink = document.querySelector('#profile-link-container a');
+            const isSignedIn = profileLink && profileLink.dataset.signedIn === 'true';
+
+            if (!isSignedIn) {
+                showToast("!! Please make sure account is active !!");
+                return;
+            }
+            const url = `/orderinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = `payment.html?amount=${encodeURIComponent(price)}&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}`;
+                    } else {
+                        console.error('Failed to add item to order');
+                        showToast("!! Please sign in to place an order. !!");
+                    }
+                })
+                .catch(error => {
+                    console.error('There was an error:', error);
+                    showToast("An error occurred. Please try again.");
+                });
+        }
+
+
+
+
+        // start
+  // JavaScript for Centering and Scaling the Cards and Navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('card-container');
+            const cards = container.querySelectorAll('.feature-card');
+            const navLeft = document.getElementById('nav-left');
+            const navRight = document.getElementById('nav-right');
+
+            // Function to determine which card is closest to the center
+            const updateCenteredCard = () => {
+                const containerCenter = container.scrollLeft + (container.clientWidth / 2);
+                let closestCard = null;
+                let minDistance = Infinity;
+
+                cards.forEach(card => {
+                    // Card's center point relative to the container's scroll position
+                    const cardCenter = card.offsetLeft + (card.offsetWidth / 2) - container.scrollLeft;
+                    
+                    // Calculate the horizontal distance from the card's center to the container's visual center
+                    const distance = Math.abs(cardCenter - (container.clientWidth / 2));
+
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestCard = card;
+                    }
+
+                    card.classList.remove('is-centered');
+                });
+
+                if (closestCard) {
+                    closestCard.classList.add('is-centered');
+                }
+            };
+
+            // Function to update the disabled state of the navigation buttons
+            const updateNavButtons = () => {
+                navLeft.disabled = container.scrollLeft <= 5; // Tolerance of 5px
+                // Calculate scroll end with tolerance. container.scrollWidth includes the cards + their margins.
+                // container.clientWidth is the visible width.
+                // The tolerance handles small floating point errors near the end.
+                navRight.disabled = (container.scrollLeft + container.clientWidth) >= (container.scrollWidth - 5);
+            };
+
+            // Function to calculate a suitable scroll step based on the card size
+            const getScrollStep = () => {
+                // Use the width of the first card + its margin (20px total: 10px left/right)
+                const card = cards[0];
+                if (!card) return container.clientWidth;
+                // Add the margin applied to the card (2 * 10px in CSS)
+                return card.offsetWidth + 20; 
+            };
+
+            // Scroll handlers
+            navRight.addEventListener('click', () => {
+                const step = getScrollStep();
+                container.scrollBy({ left: step, behavior: 'smooth' });
             });
+
+            navLeft.addEventListener('click', () => {
+                const step = getScrollStep();
+                container.scrollBy({ left: -step, behavior: 'smooth' });
+            });
+
+            // Set the initial state
+            updateCenteredCard();
+            updateNavButtons();
+            
+            // Re-check and update when scrolling stops (debounced)
+            let scrollTimeout;
+            container.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    updateCenteredCard();
+                    updateNavButtons();
+                }, 100); 
+            });
+
+            // Re-check on window resize
+            window.addEventListener('resize', () => {
+                updateCenteredCard();
+                updateNavButtons();
+            });
+
+        });
+
+
+// working of add
+document.addEventListener('DOMContentLoaded', () => {
+    // Select all necessary elements
+    const carousel = document.querySelector('.image-carousel');
+    if (!carousel) return; // Exit if carousel element is not found
+
+    const images = carousel.querySelectorAll('.carousel-images img');
+    const indicators = carousel.querySelectorAll('.indicator');
+    const leftArrow = carousel.querySelector('.left-arrow');
+    const rightArrow = carousel.querySelector('.right-arrow');
+
+    // Variable to track the current slide index (0-based)
+    let currentSlide = 0;
+    const totalSlides = images.length;
+
+    // --- Core Functions ---
+
+    // Function to update the display (image and indicator)
+    const updateCarousel = (index) => {
+        // 1. Update Images
+        images.forEach((img, i) => {
+            // Remove 'active-image' from all images
+            img.classList.remove('active-image');
+        });
+        // Add 'active-image' to the current slide
+        images[index].classList.add('active-image');
+
+        // 2. Update Indicators
+        indicators.forEach((indicator, i) => {
+            // Remove 'active-indicator' from all indicators
+            indicator.classList.remove('active-indicator');
+        });
+        // Add 'active-indicator' to the current indicator
+        indicators[index].classList.add('active-indicator');
+    };
+
+
+    // --- Event Listeners for Arrows ---
+
+    // Handle Right Arrow click
+    rightArrow.addEventListener('click', () => {
+        // Calculate the next slide index.
+        // The modulo operator (%) ensures it wraps back to 0 when it reaches the end.
+        currentSlide = (currentSlide + 1) % totalSlides;
+        updateCarousel(currentSlide);
+    });
+
+    // Handle Left Arrow click
+    leftArrow.addEventListener('click', () => {
+        // Calculate the previous slide index.
+        // We add totalSlides before the modulo to handle the wrap-around from 0 to the last slide.
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        updateCarousel(currentSlide);
+    });
+
+
+    // --- Event Listeners for Indicators ---
+
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            // Set the current slide directly to the clicked indicator's index
+            currentSlide = index;
+            updateCarousel(currentSlide);
         });
     });
 
-    // Function to show a toast message
-    function showToast(message) {
-        const toast = document.getElementById("toast");
-        toast.textContent = message;
-        toast.classList.add("show");
-        setTimeout(function(){
-            toast.classList.remove("show");
-        }, 1500); // Hide after 3 seconds
-    }
-
-    function addToCart(name, price, image) {
-        const profileLink = document.querySelector('#profile-link-container a');
-        const isSignedIn = profileLink && profileLink.dataset.signedIn === 'true';
-
-        if (!isSignedIn) {
-            showToast(" !! Please sign in to add items to your cart. !!");
-            return; // Stop execution if not signed in
-        }
-
-        const url = `/cartinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}&image=${encodeURIComponent(image)}`; // ENSURE THIS URL IS CORRECT
-
-        fetch(url)
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = 'carts.html'; // Redirect to the cart page after successful addition
-                } else {
-                    console.error('Failed to add item to cart');
-                     showToast(" !! Please sign in to add items to your cart. !!");
-                }
-            })
-            .catch(error => {
-                console.error('There was an error:', error);
-                showToast("An error occurred. Please try again.");
-            });
-    }
+    // Initial setup (redundant if you set the first image/indicator as active in HTML,
+    // but good practice to ensure consistency)
+    updateCarousel(currentSlide);
+});
 
 
-   
 
-    function addtoorder(name, price,image) {
-        const profileLink = document.querySelector('#profile-link-container a');
-        const isSignedIn = profileLink && profileLink.dataset.signedIn === 'true';
 
-        if (!isSignedIn) {
-            showToast(" !! Please sign in to place an order. !!");
-            return; // Stop execution if not signed in
-        }
-
-        // Construct the URL with price and quantity
-        const url = `/orderinserted/?name=${encodeURIComponent(name)}&price=${encodeURIComponent(price)}`;
-
-        fetch(url)
-            .then(response => {
-                if (response.ok) {
-                    window.location.href = `payment.html?amount=${encodeURIComponent(price)}&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}` // Redirect to the order page after successful addition
-                } else {
-                    console.error('Failed to add item to order');
-                    showToast(" !! Please sign in to place an order. !!");
-                }
-            })
-            .catch(error => {
-                console.error('There was an error:', error);
-                showToast("An error occurred. Please try again.");
-            });
-    }
-
-</script>
-
+    </script>
 </body>
 </html>

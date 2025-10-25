@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MED-CARE Features Carousel</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Styles for Scroll and Card Appearance */
+        :root {
+            /* Define the background gradient from the user's request */
+            --gradient-subtle: linear-gradient(30deg, #ffffff, #eeebeb);
+            /* Soft Blue from the image */
+            --color-blue: #D6EAF8;
+            /* Soft Yellow/Orange from the image */
+            --color-orange: #FAEBD7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Only apply background style here, no layout classes */
+            background: var(--gradient-subtle); 
+        }
+
+        /* Container for the horizontal scrolling area */
+        .scroll-container {
+            display: flex;
+            overflow-x: scroll;
+            /* Enables smooth scrolling animation */
+            scroll-behavior: smooth; 
+            /* Forces cards to snap to the center when scrolling stops */
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+            /* Hide the scrollbar visually */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            /* Add padding to the scroll container ends to center the first/last cards properly */
+            padding: 0 10vw; /* Padding calculation relies on card width of 85vw on mobile */
+        }
+        
+        @media (min-width: 768px) {
+             .scroll-container {
+                padding: 0 20px; /* Smaller padding on desktop since cards are narrower */
+             }
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Styling for each individual card (the "box") */
+        .feature-card {
+            flex: 0 0 auto; /* Prevent cards from shrinking */
+            width: 85vw; /* Start with 85% width on small screens */
+            max-width: 350px; /* Max width on desktop */
+            height: auto;
+            margin: 0 10px; /* Space between cards */
+            scroll-snap-align: center;
+            /* START OF CREATIVE SCROLLING CHANGE: All cards start scaled down */
+            transform: scale(0.9);
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out; 
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05); /* Soft shadow */
+        }
+        
+        /* The effect for the centered card */
+        .feature-card.is-centered {
+            transform: scale(1.05); /* Increased scale when centered to make it stand out */
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2); /* Stronger shadow when focused */
+        }
+
+        /* Media query for tablet/desktop views */
+        @media (min-width: 768px) {
+            .feature-card {
+                width: 300px; /* Smaller width on desktop to fit more */
+                /* Adjust padding on scroll container to ensure center snap works well */
+                margin: 0 20px;
+            }
+        }
+
+        /* --- New Header Animation Styles --- */
+        
+        /* Animation Keyframes: Reveal from center to sides */
+        @keyframes slideIn {
+            from {
+                transform: scaleX(0); /* Start completely compressed horizontally */
+                opacity: 0;
+            }
+            to {
+                transform: scaleX(1); /* End fully open */
+                opacity: 1;
+            }
+        }
+
+        /* Class to apply the animation to the header */
+        .slide-in-animation {
+            transform-origin: center center; /* Start the animation from the center point */
+            animation: slideIn 1.0s ease-out forwards; /* Apply the animation */
+            opacity: 0; /* Start hidden before animation */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NEW WRAPPER DIV: All layout/spacing classes are now here -->
+    <div class="min-h-screen p-4 md:p-12 flex flex-col items-center">
+
+        <header class="text-center mb-10 w-full max-w-4xl slide-in-animation">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-2">
+                MED-CARE: Our Core Commitments
+            </h1>
+            <p class="text-gray-500 max-w-2xl mx-auto">
+                Welcome to MED-CARE, your global source for trusted medical equipment and supplies. We define our service through these six pillars of excellence.
+            </p>
+        </header>
+
+        <!-- Scrolling Feature Container Wrapper for arrows -->
+        <!-- Added relative positioning for arrow placement -->
+        <div class="relative w-full max-w-6xl mx-auto px-10 md:px-0">
+            
+            <!-- Left Arrow Navigation -->
+            <button id="nav-left" class="absolute hidden md:block left-[-60px] top-1/2 transform -translate-y-1/2 z-10 p-4 rounded-full bg-white shadow-xl transition duration-300 hover:scale-110 hover:bg-gray-50 text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Scroll left">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+
+            <!-- Scrolling Feature Container -->
+            <div id="card-container" class="scroll-container w-full py-6 md:py-10">
+
+                <!-- Card 1: Global Reach (Blue Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-blue)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#007ACC]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5a2.5 2.5 0 002.5 2.5h1a2.5 2.5 0 012.5 2.5v1a2.5 2.5 0 002.5 2.5h1a2.5 2.5 0 012.5 2.5v1.5M16 8.5h-1A2.5 2.5 0 0012.5 6v-1A2.5 2.5 0 0115 3h1a2.5 2.5 0 002.5-2.5V.5"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Global Reach</h4>
+                    <p class="text-sm">Delivering reliable, certified healthcare products and swift logistics to institutions and professionals across the globe.</p>
+                </div>
+
+                <!-- Card 2: Certified Quality (Orange Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-orange)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.236 9 11.664 5.176-1.428 9-6.073 9-11.664-.083-1.412-.325-2.825-.76-4.21"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Certified Quality</h4>
+                    <p class="text-sm">We maintain the highest standards and certifications for all products, ensuring quality and safety for every patient and clinician.</p>
+                </div>
+
+                <!-- Card 3: Specialized Focus (Blue Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-blue)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#007ACC]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-1a5 5 0 115 5h3a4 4 0 11-4 4v-11a5 5 0 00-5-5z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Specialized Focus</h4>
+                    <p class="text-sm">We specialize in disposable consumables, advanced diagnostic tools, and essential protective equipment to meet critical needs.</p>
+                </div>
+
+                <!-- Card 4: Client Partnership (Orange Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-orange)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M12 10a3 3 0 100-6 3 3 0 000 6zm-7 6.5A5.002 5.002 0 0112 14a5.002 5.002 0 017-2.5"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Client Partnership</h4>
+                    <p class="text-sm">We are dedicated partners to healthcare professionals, offering unparalleled support and swift responses for critical supply needs.</p>
+                </div>
+
+                <!-- Card 5: Safety & Compliance (Blue Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-blue)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#007ACC]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.236 9 11.664 5.176-1.428 9-6.073 9-11.664-.083-1.412-.325-2.825-.76-4.21"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Safety & Compliance</h4>
+                    <p class="text-sm">Our mission is dedicated to upholding quality, safety, and strict compliance standards for superior patient care outcomes.</p>
+                </div>
+                
+                <!-- Card 6: Supply Chain Swiftness (Orange Theme) -->
+                <div class="feature-card rounded-2xl bg-white border border-gray-100 flex flex-col p-6 text-gray-700">
+                    <div class="p-4 rounded-full w-16 h-16 bg-[var(--color-orange)] mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-[#FF9800]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="text-2xl font-bold mb-2 text-gray-800">Supply Chain Swiftness</h4>
+                    <p class="text-sm">We ensure rapid logistics and guaranteed delivery efficiency, getting critical supplies to you exactly when and where they are needed.</p>
+                </div>
+
+            </div>
+            <!-- End Scroll Container -->
+
+            <!-- Right Arrow Navigation -->
+            <button id="nav-right" class="absolute hidden md:block right-[-60px] top-1/2 transform -translate-y-1/2 z-10 p-4 rounded-full bg-white shadow-xl transition duration-300 hover:scale-110 hover:bg-gray-50 text-gray-700 disabled:opacity-30 disabled:cursor-not-allowed" aria-label="Scroll right">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+        </div>
+        <!-- End Scroll Container Wrapper -->
+
+        <footer class="mt-8 text-center text-sm text-gray-400">
+            Scroll left and right to see all 6 features (Use arrows on desktop).
+        </footer>
+    </div>
+    <!-- End NEW WRAPPER DIV -->
+
+    <script>
+        // JavaScript for Centering and Scaling the Cards and Navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('card-container');
+            const cards = container.querySelectorAll('.feature-card');
+            const navLeft = document.getElementById('nav-left');
+            const navRight = document.getElementById('nav-right');
+
+            // Function to determine which card is closest to the center
+            const updateCenteredCard = () => {
+                const containerCenter = container.scrollLeft + (container.clientWidth / 2);
+                let closestCard = null;
+                let minDistance = Infinity;
+
+                cards.forEach(card => {
+                    // Card's center point relative to the container's scroll position
+                    const cardCenter = card.offsetLeft + (card.offsetWidth / 2) - container.scrollLeft;
+                    
+                    // Calculate the horizontal distance from the card's center to the container's visual center
+                    const distance = Math.abs(cardCenter - (container.clientWidth / 2));
+
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestCard = card;
+                    }
+
+                    card.classList.remove('is-centered');
+                });
+
+                if (closestCard) {
+                    closestCard.classList.add('is-centered');
+                }
+            };
+
+            // Function to update the disabled state of the navigation buttons
+            const updateNavButtons = () => {
+                navLeft.disabled = container.scrollLeft <= 5; // Tolerance of 5px
+                // Calculate scroll end with tolerance. container.scrollWidth includes the cards + their margins.
+                // container.clientWidth is the visible width.
+                // The tolerance handles small floating point errors near the end.
+                navRight.disabled = (container.scrollLeft + container.clientWidth) >= (container.scrollWidth - 5);
+            };
+
+            // Function to calculate a suitable scroll step based on the card size
+            const getScrollStep = () => {
+                // Use the width of the first card + its margin (20px total: 10px left/right)
+                const card = cards[0];
+                if (!card) return container.clientWidth;
+                // Add the margin applied to the card (2 * 10px in CSS)
+                return card.offsetWidth + 20; 
+            };
+
+            // Scroll handlers
+            navRight.addEventListener('click', () => {
+                const step = getScrollStep();
+                container.scrollBy({ left: step, behavior: 'smooth' });
+            });
+
+            navLeft.addEventListener('click', () => {
+                const step = getScrollStep();
+                container.scrollBy({ left: -step, behavior: 'smooth' });
+            });
+
+            // Set the initial state
+            updateCenteredCard();
+            updateNavButtons();
+            
+            // Re-check and update when scrolling stops (debounced)
+            let scrollTimeout;
+            container.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    updateCenteredCard();
+                    updateNavButtons();
+                }, 100); 
+            });
+
+            // Re-check on window resize
+            window.addEventListener('resize', () => {
+                updateCenteredCard();
+                updateNavButtons();
+            });
+
+        });
+    </script>
+</body>
+</html>

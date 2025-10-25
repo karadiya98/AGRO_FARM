@@ -28,17 +28,18 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 70px; /* Slightly taller for more presence */
+            height: 80px; /* Slightly taller for more presence */
             background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
-            border-radius: 0; /* Full width, no rounded corners for a sleek look */
+            border-bottom-left-radius:20px; /* Full width, no rounded corners for a sleek look */
+            border-bottom-right-radius:20px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
             display: flex;
+            
             align-items: center;
             justify-content: space-between; /* Distribute logo, search, and nav links */
             padding: 0 30px; /* More padding */
             z-index: 10000;
         }
-
         /* AGRO-FARM Logo and Text */
         nav .logo-section {
             display: flex;
@@ -598,7 +599,7 @@
         <div class="logo">AGRO-FARM</div>
     </div>
 
-    <div class="nav-search-country">
+    <!-- <div class="nav-search-country">
         <div class="search-input-container">
             <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
             <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
@@ -609,7 +610,7 @@
             <option value="sri_lanka">Sri Lanka</option>
             <option value="canada">Canada</option>
             <option value="australia">Australia</option>
-        </select>
+        </select> -->
     </div>
 
     <ul class="nav-links-section">
@@ -651,35 +652,36 @@
             <table aria-live="polite" aria-relevant="all" aria-label="List of your orders">
                 <thead>
                     <tr >
-                        <th>Order ID</th>
-                        <th>User_ID</th>
+                        <!-- <th>Order ID</th>
+                        <th>User_ID</th> -->
                         <th>Username</th>
                         <th>Product Name</th>
                         <th>Qty</th>
                         <th>Price</th>
                         <th>Payment Mode</th>
                         <th>Order Date</th>
-                        <th>Received Date</th>
+                        <!-- <th>Received Date</th> -->
                         <th>Total Amount</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
+                    
                 </thead>
                 <tbody id="orders-tbody">
                     {% for item in order_items %}
                     <tr data-order-id="{{ item.order_id }}">
-                        <td data-label="Order ID">{{ item.order_id }}</td>
-                        <td data-label="User ID">{{ item.userid }}</td>
+                        <!-- <td data-label="Order ID">{{ item.order_id }}</td>
+                        <td data-label="User ID">{{ item.userid }}</td> -->
                         <td data-label="Username">{{ item.user_name }}</td>
                         <td data-label="Product Name">{{ item.product_name }}</td>
                         <td data-label="Quantity">{{ item.quantity }}</td>
-                        <td data-label="Price" class="price">${{ item.price_per_item|floatformat:2 }}</td>
-                        <td data-label="Payment Mode">cash on delivery</td>
-                        <td data-label="Order Date">5/2/2005</td>
-                        <td data-label="Received Date">
+                        <td data-label="Price" class="price">Rs : {{ item.price_per_item|floatformat:2 }}</td>
+                        <td data-label="Payment Mode">COD</td>
+                        <td data-label="Order Date">{{ item.hello }}</td>
+                        <!-- <td data-label="Received Date">
                             5/2/2005
-                        </td>
-                        <td data-label="Total Amount" class="price">${{ item.total_amount|floatformat:2 }}</td>
+                        </td> -->
+                        <td data-label="Total Amount" class="price">Rs : {{ item.total_amount|floatformat:2 }}</td>
                         <td data-label="Status"><span class="status status-delivered">{{status}}</span></td>
                         <td data-label="Action">
                             <div class="action-buttons"> 
@@ -692,7 +694,7 @@
                                 </form>
                                 {% endif %}
 
-                                <button type="button" class="btn-view" onclick="viewOrderDetails('{{status}}','{{item.order_id}}','{{item.user_name}}','{{item.product_name}}','{{item.quantity}}','{{item.price_per_item|floatformat:2}}','{{ item.total_amount|floatformat:2 }}')">View....</button>
+                                <button type="button" class="btn-view" onclick="viewOrderDetails('{{status}}','{{item.order_id}}','{{item.user_name}}','{{item.product_name}}','{{item.quantity}}','{{item.price_per_item|floatformat:2}}','{{ item.total_amount|floatformat:2 }}','{{ item.hello }}')">View....</button>
                                     </div>
                                 <!-- <button type="button" class="btn-view" onclick="window.open('charts')">View</button> -->
                             </div>
@@ -831,13 +833,13 @@
         });
         
         //  charts logic 
-        function viewOrderDetails(status,orderid,username,productname,quantity,price,total_amount) {
+        function viewOrderDetails(status,orderid,username,productname,quantity,price,total_amount,order_date) {
             const orderData = {
                 orderId: orderid,
-                orderDate: "2/5/2005",
+                orderDate: order_date,
                 total: total_amount,
                 payment: "COD",
-                shippingAddress: "Sedrana,Siddhpur",
+                shippingAddress: "Baroda city",
                 status: status, // Status to highlight on the tracking page
                 products: [
                            { name: productname, qty: quantity, price: price , img: "{% static 'images/agro-removebg-preview.png' %}" },

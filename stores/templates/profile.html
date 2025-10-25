@@ -27,11 +27,13 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 70px; /* Slightly taller for more presence */
+            height: 80px; /* Slightly taller for more presence */
             background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
-            border-radius: 0; /* Full width, no rounded corners for a sleek look */
+            border-bottom-left-radius:20px; /* Full width, no rounded corners for a sleek look */
+            border-bottom-right-radius:20px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
             display: flex;
+            
             align-items: center;
             justify-content: space-between; /* Distribute logo, search, and nav links */
             padding: 0 30px; /* More padding */
@@ -444,7 +446,7 @@
         <div class="logo">AGRO-FARM</div>
     </div>
 
-    <div class="nav-search-country">
+    <!-- <div class="nav-search-country">
         <div class="search-input-container">
             <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
             <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
@@ -455,7 +457,8 @@
             <option value="sri_lanka">Sri Lanka</option>
             <option value="canada">Canada</option>
             <option value="australia">Australia</option>
-        </select>
+        </select> -->
+        
     </div>
 
     <ul class="nav-links-section">
@@ -498,11 +501,11 @@
 
         <div class="profile-info">
             {% if user_detail %}
-                <p><i class="fas fa-id-badge"></i><strong>User ID:</strong> {{ user_detail.user_id }}</p>
+                <p><i class="fas fa-id-badge"></i><strong>User ID:</strong> ***</p>
                 <p><i class="fas fa-user"></i><strong>Username:</strong> {{ user_detail.user_name }}</p>
                 <p><i class="fas fa-envelope"></i><strong>Email:</strong> {{ user_detail.gmail }}</p>
                 {# Add other custom fields from User_Detail here if they exist, e.g.: #}
-                 <p><i class="fas fa-phone"></i><strong>Password:</strong> {{ user_detail.password }}</p> 
+                 <p><i class="fas fa-phone"></i><strong>Password:</strong> *****</p> 
                 {# <p><i class="fas fa-map-marker-alt"></i><strong>Address:</strong> {{ user_detail.address }}</p> #}
             {% else %}
                 <p class="not-logged-in-message">It looks like you're not logged in or your profile details are missing.</p>

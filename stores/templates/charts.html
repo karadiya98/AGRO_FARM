@@ -219,6 +219,7 @@
         /* Tracking Chart/Timeline */
         .tracking-timeline {
             display: flex;
+            height: fit-content;
             justify-content: space-between;
             align-items: flex-start;
             margin-top: 30px;
@@ -594,23 +595,33 @@
                 <h2>Order Summary</h2>
                 <div class="summary-grid">
                     <div class="summary-item">
+                        <strong>Customer name</strong>
+                        <span>{{profile_name}}</span>
+                    </div>
+
+                    <div class="summary-item">
                         <strong>Order ID:</strong>
                         <span id="orderIdDisplay">#N/A</span>
                     </div>
+
+
                     <div class="summary-item">
                         <strong>Order Date:</strong>
-                        <span id="orderDateDisplay">N/A</span>
+                        <span id="orderDateDisplay">NA</span>
                     </div>
+
+
                     <div class="summary-item">
                         <strong>Total:</strong>
                         <span id="orderTotalDisplay">₹0.00</span>
                     </div>
+                    
                     <div class="summary-item">
                         <strong>Payment:</strong>
                         <span id="paymentMethodDisplay">N/A</span>
                     </div>
                     <div class="summary-item">
-                        <strong>Shipping Address:</strong>
+                        <strong>Delivered from</strong>
                         <span id="shippingAddressDisplay">N/A</span>
                     </div>
                     <div class="summary-item">
@@ -655,13 +666,13 @@
                     </div>
                 </div>
 
-                <div class="chart-placeholder">
+                <!-- <div class="chart-placeholder">
                     <p>
                         <i class="fa-solid fa-chart-line" style="margin-right: 10px;"></i>
                         Visualizing your order journey.
                     </p>
                     <img src="https://via.placeholder.com/600x200?text=Order+Status+Chart+Placeholder" alt="Order Status Chart" style="max-width: 100%; height: auto; margin-top: 15px; border-radius: 5px;">
-                </div>
+                </div> -->
 
                 <div class="download-button-container" id="downloadButtonContainer">
                     <button class="download-button" onclick="downloadOrderBillHtml(currentOrderData)">Download Order Bill</button>
@@ -672,10 +683,11 @@
 
     <script>
         let currentOrderData = null;
-
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const encodedOrderData = urlParams.get('orderData');
+            
+        
 
             if (encodedOrderData) {
                 try {
@@ -685,6 +697,12 @@
                     updateTrackingTimeline(orderData.status);
                     renderProductList(orderData.products);
                     toggleDownloadButton(orderData.status);
+
+                   
+                    
+
+
+
                 } catch (e) {
                     console.error("Failed to parse order data from URL:", e);
                 }
@@ -693,7 +711,7 @@
                 // Example of default data if no URL parameter is provided for testing:
                 const defaultOrder = {
                     orderId: '#AD123456',
-                    orderDate: 'May 30, 2025',
+                    orderDate: 'May 30, 2024',
                     total: 1250.00,
                     payment: 'Credit Card',
                     shippingAddress: '123 Green Lane, Farmville, Agronomia - 567890',
@@ -828,6 +846,7 @@
                 month: 'long',
                 day: 'numeric'
             });
+            
 
             const billHtml = `
                 <!DOCTYPE html>
@@ -863,6 +882,7 @@
                             padding-bottom: 20px;
                             border-bottom: 1px solid #eee;
                         }
+
                         .invoice-header h1 {
                             font-family: 'Montserrat', sans-serif;
                             font-size: 36px;
@@ -1021,10 +1041,10 @@
                             <h1>AGRO BILL</h1>
                             <div class="company-info">
                                 <strong>AgroDirect Supplies</strong><br>
-                                GIDC , SIDDHPUR , GUJARAT <br>
+                                Baroda city<br>
                                 
-                                Phone: 8780929056 <br>
-                                Email: karadiyahaiderali7@gmail.com
+                                Phone: 8200428973 <br>
+                                Email: agrofarm.ltd2@gmail.com
                             </div>
                         </div>
 
@@ -1046,15 +1066,15 @@
                         <div class="billing-shipping-info">
                             <div>
                                 <h3>Billed from:</h3>
-                                <span>${customerName}</span><br>
+                                <span>AGRO FARM.LTD</span><br>
                                 <span>${shippingAddress.split(',').slice(0, 2).join(',')}</span><br>
                                 <span>${shippingAddress.split(',').slice(2).join(',')}</span>
                             </div>
+
                             <div>
                                 <h3>Billed To:</h3>
-                                <span>${customerName}</span><br>
-                                <span>${shippingAddress.split(',').slice(0, 2).join(',')}</span><br>
-                                <span>${shippingAddress.split(',').slice(2).join(',')}</span>
+                                <span>  {{profile_name}}</span><br>
+                                
                             </div>
                         </div>
 
@@ -1075,17 +1095,14 @@
                         <div class="totals-section">
                             <table class="totals-table">
                                 <tr>
-                                    <td>Subtotal:</td>
+                                    <td>Price :</td>
                                     <td>₹${(products.reduce((sum, item) => sum + (item.qty * parseFloat(item.price)), 0)).toFixed(2)}</td>
                                 </tr>
                                 <tr>
-                                    <td>Shipping:</td>
-                                    <td>₹50.00</td>
+                                    <td>Shipping :</td>
+                                    <td>₹00.00</td>
                                 </tr>
-                                <tr>
-                                    <td>Tax (5%):</td>
-                                    <td>₹${(products.reduce((sum, item) => sum + (item.qty * parseFloat(item.price)), 0) * 0.05).toFixed(2)}</td>
-                                </tr>
+                                
                                 <tr>
                                     <td>Total:</td>
                                     <td>${total}</td>
@@ -1095,7 +1112,7 @@
 
                         <div class="footer-note">
                             <p>Thank you for your business! All payments are due within 15 days of invoice date.</p>
-                            <p>For any queries, please contact us at <a href="mailto:support@agrodirect.com">karadiyahaiderali@gmail.com</a></p>
+                            <p>For any queries, please contact us at <a href="mailto:support@agrodirect.com">agrofarm.ltd2@gmail.com</a></p>
                         </div>
                     </div>
                 </body>

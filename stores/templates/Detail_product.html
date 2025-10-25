@@ -429,7 +429,7 @@
             <p id="item-description" class="product-description">
                 A sleek, stylish modern watch with a durable leather strap and a bright, clear display. Perfect for both casual and formal occasions.
             </p>
-            <div id="item-price" class="product-price">$199.99</div>
+            <div id="item-price" class="product-price">Rs. 199.99</div>
 
             <div class="quantity-controls">
                 <label for="quantity">Quantity:</label>
@@ -439,16 +439,10 @@
             </div>
 
             <div class="buttons">
-                <button id="add-to-cart-btn" class="add-to-cart" aria-label="Add Modern Watch to cart"
-                        onclick="event.stopPropagation();
-                                 const name = document.getElementById('item-name').textContent;
-                                 const price = document.getElementById('item-price').textContent.replace('$', ''); // Remove '$' sign
-                                 const imageUrl = document.getElementById('item-image').src;
-                                 const quantity = parseInt(document.getElementById('quantity').value);
-                                 addToCart(name, price, imageUrl, quantity);">
+                <button id="add-to-cart-btn" class="add-to-cart" aria-label="Add Modern Watch to cart">
                     Add to Cart
                 </button>
-
+                
                 <button id="order-btn" class="order" type="button" aria-label="Order Modern Watch now">
                     Order
                 </button>
@@ -459,7 +453,7 @@
     <div id="confirmationDialogOverlay" class="confirmation-dialog-overlay">
         <div class="confirmation-dialog">
             <h2>Confirm Your Order</h2>
-            <p>You are about to order <strong id="confirm-quantity">1</strong> of <strong id="confirm-product-name">Modern Watch</strong> for a total of <strong id="confirm-total-price">$199.99</strong>. Would you like to proceed?</p>
+            <p>You are about to order <strong id="confirm-quantity">1</strong> of <strong id="confirm-product-name">Modern Watch</strong> for a total of <strong id="confirm-total-price">Rs. 199.99</strong>. Would you like to proceed?</p>
             <div class="dialog-buttons">
                 <button class="confirm-btn" id="confirmOrderButton">Confirm</button>
                 <button class="cancel-btn" onclick="hideConfirmationDialog()">Cancel</button>
@@ -519,12 +513,21 @@
             // Update product price if passed
             if(params.price) {
                 const priceEl = document.getElementById("item-price");
-                // Prepend "$" for display
-                priceEl.textContent = "$" + sanitizeHTML(params.price);
+                // Prepend "Rs. " for display
+                priceEl.textContent = "Rs. " + sanitizeHTML(params.price);
             }
 
             // Event listener for the Order button to show the confirmation dialog
             document.getElementById('order-btn').addEventListener('click', showConfirmationDialog);
+            
+            // Event listener for the Add to Cart button
+            document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+                const name = document.getElementById('item-name').textContent;
+                const price = document.getElementById('item-price').textContent.replace('Rs. ', ''); // Remove 'Rs. '
+                const imageUrl = document.getElementById('item-image').src;
+                const quantity = parseInt(document.getElementById('quantity').value);
+                addToCart(name, price, imageUrl, quantity);
+            });
         });
 
         // Function to show toast messages
@@ -584,7 +587,7 @@
 
         function showConfirmationDialog() {
             globalName = document.getElementById('item-name').textContent;
-            globalPrice = document.getElementById('item-price').textContent.replace('$', '');
+            globalPrice = document.getElementById('item-price').textContent.replace('Rs. ', '');
             globalQuantity = parseInt(document.getElementById('quantity').value);
             globalImage = document.getElementById('item-image').src;
 
@@ -592,7 +595,7 @@
 
             document.getElementById('confirm-product-name').textContent = globalName;
             document.getElementById('confirm-quantity').textContent = globalQuantity;
-            document.getElementById('confirm-total-price').textContent = `$${totalPrice}`;
+            document.getElementById('confirm-total-price').textContent = `Rs. ${totalPrice}`;
 
             document.getElementById('confirmationDialogOverlay').classList.add('show');
         }

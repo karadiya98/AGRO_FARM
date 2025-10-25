@@ -3,85 +3,103 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Welcome to Agro Farm</title>
+  <title>MED-CARE | Your Health Store</title>
   <style>
-    /* Full viewport height and reset */
+    /* Reset and base */
     html, body {
       height: 100%;
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #ffddb4 0%, #88ab75 100%);
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       color: #2c3e50;
-      text-align: center;
     }
 
-    /* Container for buttons */
     .container {
-      background: rgba(255, 255, 255, 0.75);
+      background: #ffffff;
       border-radius: 20px;
-      padding: 40px 60px;
-      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      max-width: 400px;
+      padding: 40px 50px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      text-align: center;
       width: 90%;
+      max-width: 450px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Decorative gradient bar top */
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 5px;
+      width: 100%;
+      background: linear-gradient(90deg, #0077b6, #00b4d8, #90e0ef);
     }
 
     h1 {
-      margin-bottom: 40px;
-      font-weight: 700;
-      font-size: 2.5rem;
+      font-size: 2.2rem;
+      color: #0077b6;
+      margin-top: 10px;
+      margin-bottom: 15px;
       letter-spacing: 1px;
-      color: #356859;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
     }
 
-    /* Buttons styling */
+    p.tagline {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 35px;
+    }
+
+    /* Product style card buttons */
     .btn {
       display: block;
-      width: 100%;
-      padding: 15px 0;
-      margin: 15px 0;
-      border-radius: 40px;
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition:
-        background 0.3s ease,
-        transform 0.2s ease,
-        box-shadow 0.3s ease;
       text-decoration: none;
+      background: #fff;
+      border: 2px solid #0077b6;
+      border-radius: 18px;
+      padding: 15px 20px;
+      margin: 15px 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0077b6;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .btn:hover {
+      transform: translateY(-5px);
+      background: linear-gradient(45deg, #0077b6, #00b4d8);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 8px 25px rgba(0,119,182,0.4);
+    }
+
+    /* Icons */
+    .btn span {
+      margin-right: 10px;
+      font-size: 1.4rem;
+      vertical-align: middle;
+    }
+
+    /* Floating icons background for ecommerce feel */
+    .decor {
+      position: absolute;
+      opacity: 0.08;
+      font-size: 6rem;
       user-select: none;
     }
+    .decor.one { top: 15%; left: 8%; transform: rotate(-15deg); color: #0077b6; }
+    .decor.two { bottom: 20%; right: 10%; transform: rotate(15deg); color: #00b4d8; }
 
-    /* Admin button - rich forest green */
-    .btn.admin {
-      background: linear-gradient(45deg, #2d6a4f, #52b788);
-      box-shadow: 0 5px 15px rgba(45, 106, 79, 0.6);
-    }
-    .btn.admin:hover, .btn.admin:focus {
-      background: linear-gradient(45deg, #52b788, #2d6a4f);
-      box-shadow: 0 8px 20px rgba(45, 106, 79, 0.8);
-      transform: translateY(-3px);
-      outline: none;
-    }
-
-    /* User button - warm auburn */
-    .btn.user {
-      background: linear-gradient(45deg, #a64b2a, #d9822b);
-      box-shadow: 0 5px 15px rgba(166, 75, 42, 0.6);
-    }
-    .btn.user:hover, .btn.user:focus {
-      background: linear-gradient(45deg, #d9822b, #a64b2a);
-      box-shadow: 0 8px 20px rgba(166, 75, 42, 0.8);
-      transform: translateY(-3px);
-      outline: none;
+    footer {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #777;
     }
 
     @media (max-width: 480px) {
@@ -89,20 +107,26 @@
         padding: 30px 25px;
       }
       h1 {
-        font-size: 2rem;
+        font-size: 1.9rem;
       }
       .btn {
         font-size: 1.1rem;
-        padding: 12px 0;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container" role="main" aria-label="Role selection">
-    <h1>AGRO FARM</h1>
-    <a href="/admin/" class="btn admin" role="button" aria-label="Go to Admin page">Admin</a>
-    <a href="home.html" class="btn user" role="button" aria-label="Go to User page">User</a>
+  <div class="container">
+    <div class="decor one">🩺</div>
+    <div class="decor two">💊</div>
+
+    <h1>MED-CARE</h1>
+    <p class="tagline">Your trusted online store for medical & health products</p>
+
+    <a href="/admin/" class="btn admin"><span>⚙️</span>Admin Dashboard</a>
+    <a href="home.html" class="btn user"><span>🛍️</span>Shop as User</a>
+
+    <footer>© 2025 MED-CARE • All rights reserved</footer>
   </div>
 </body>
 </html>

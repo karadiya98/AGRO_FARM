@@ -26,11 +26,13 @@
             top: 0;
             left: 0;
             width: 100vw;
-            height: 70px; /* Slightly taller for more presence */
+            height: 80px; /* Slightly taller for more presence */
             background: linear-gradient(90deg, #2e8b57, #4CAF50); /* Darker, richer green */
-            border-radius: 0; /* Full width, no rounded corners for a sleek look */
+            border-bottom-left-radius:20px; /* Full width, no rounded corners for a sleek look */
+            border-bottom-right-radius:20px; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* Stronger, more defined shadow */
             display: flex;
+            
             align-items: center;
             justify-content: space-between; /* Distribute logo, search, and nav links */
             padding: 0 30px; /* More padding */
@@ -484,7 +486,7 @@
         <div class="logo">AGRO-FARM</div>
     </div>
 
-    <div class="nav-search-country">
+    <!-- <div class="nav-search-country">
         <div class="search-input-container">
             <input type="search" placeholder="Search Bar" class="search-input" aria-label="Search items"/>
             <div class="search-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
@@ -496,7 +498,7 @@
             <option value="canada">Canada</option>
             <option value="australia">Australia</option>
         </select>
-    </div>
+    </div> -->
 
     <ul class="nav-links-section">
         <li><a href="{% url 'home' %}">
@@ -537,8 +539,16 @@
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>                    
                 {% endfor %}
+                
+            </div>
+        {% endif %}
+
+        {% if signup %}
+            <div class="messages">
+
+                    <div class="alert alert-{{ i.tags }}">{{ signup }}</div>
             </div>
         {% endif %}
 
@@ -567,12 +577,12 @@
                                 {% endif %}
                             </td>
                             <td>{{ item.name }}</td>
-                            <td class="price">${{ item.price }}</td>
+                            <td class="price">RS. {{ item.price }}</td>
                             <td >
                                 <div class="quantity-controls">
-                                    <button onclick="updateQuantity('{{ item.id }}', 'decrease')">-</button>
+                                    <!-- <button onclick="updateQuantity('{{ item.id }}', 'decrease')">-</button> -->
                                     <input type="number" id="quantity-{{ item.id }}" value="{{ item.quantity }}" min="1">
-                                    <button onclick="updateQuantity('{{ item.id }}', 'increase')">+</button>
+                                    <!-- <button onclick="updateQuantity('{{ item.id }}', 'increase')">+</button> -->
                                 </div>
                                 <!-- {{item.quantity}} -->
                             </td>
